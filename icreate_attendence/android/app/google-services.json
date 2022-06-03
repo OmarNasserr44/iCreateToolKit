@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "898809708441",
+    "project_id": "icreate-4beec",
+    "storage_bucket": "icreate-4beec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:898809708441:android:1514426355c03c73e95d08",
+        "android_client_info": {
+          "package_name": "com.example.icreate_attendence"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "898809708441-tkq8janjg2e4m8tncp9g4l5ndo00aci3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7j09cLGK6yaxf0ucMTLt2GtyG5wl9Mq8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "898809708441-tkq8janjg2e4m8tncp9g4l5ndo00aci3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
