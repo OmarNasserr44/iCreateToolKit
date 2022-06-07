@@ -272,20 +272,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         bool cont = validate();
                         if (!cont) {
                           try {
+                            UserCredential newUser =
+                                await _auth.createUserWithEmailAndPassword(
+                                    email: signInUp.email,
+                                    password: signInUp.password);
+                            Get.find<UpdateCheck>().currentStatus = "offline";
                             await firebaseRequests.generateID();
                             await firebaseRequests.updateIDs();
-                            UserCredential newUser = await _auth
-                                .createUserWithEmailAndPassword(
-                                    email: signInUp.email,
-                                    password: signInUp.password)
-                                .timeout(Duration(seconds: 5),
-                                    onTimeout: onSignUpTimeOut());
-                            Get.find<UpdateCheck>().currentStatus = "offline";
-                            signInUp.inputData();
+                            Get.find<TasksController>().tasks = {};
+                            Get.find<UpdateCheck>().days = {};
+                            await signInUp.inputData();
                             await firebaseRequests.currentUserData();
                             await Get.find<TasksController>().getUserTasks();
-                            Get.find<NewTaskController>().getFieldDataQuery(
-                                "User Information", "ID", "Name");
+                            if (Get.find<SignInUp>().adminAcc == true) {
+                              await Get.find<NewTaskController>()
+                                  .getFieldDataQuery(
+                                      "User Information", "ID", "Name");
+                            }
                             Navigator.pop(context);
                             Navigator.pop(context);
                             Navigator.pop(context);

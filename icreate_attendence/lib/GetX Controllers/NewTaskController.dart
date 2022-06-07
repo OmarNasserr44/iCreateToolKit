@@ -54,7 +54,7 @@ class NewTaskController extends GetxController {
     }
   }
 
-  void getFieldDataQuery(
+  Future<void> getFieldDataQuery(
       String collection, String fieldRequired1, String fieldRequired2) async {
     QuerySnapshot querySnap = await FirebaseFirestore.instance
         .collection(collection)

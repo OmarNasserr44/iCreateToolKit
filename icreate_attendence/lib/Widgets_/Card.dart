@@ -77,12 +77,12 @@ class CustCard extends StatelessWidget {
             SizedBox(
               height: screenSize.height / 90,
             ),
-            // CustText(
-            //   text: secText,
-            //   fontSize: screenSize.width / 40,
-            //   color: Colors.white,
-            //   fontType: GoogleFonts.aBeeZee,
-            // )
+            CustText(
+              text: date,
+              fontSize: screenSize.width / 40,
+              color: Colors.white,
+              fontType: GoogleFonts.aBeeZee,
+            )
           ],
         ),
       ),

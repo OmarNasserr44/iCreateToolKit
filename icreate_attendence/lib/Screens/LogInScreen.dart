@@ -208,8 +208,10 @@ class _LogInScreenState extends State<LogInScreen> {
                             String passTemp = signInUp.password;
                             await firebaseRequests.currentUserData();
                             await Get.find<TasksController>().getUserTasks();
-                            Get.find<NewTaskController>().getFieldDataQuery(
-                                "User Information", "ID", "Name");
+                            if (signInUp.adminAcc) {
+                              Get.find<NewTaskController>().getFieldDataQuery(
+                                  "User Information", "ID", "Name");
+                            }
                             SharedPreferences prefs =
                                 await SharedPreferences.getInstance();
                             prefs.setString('email', emailTemp);

@@ -15,8 +15,11 @@ class FirebaseRequests extends GetxController {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   //
+  String userDoc = "".obs();
   Future<void> currentUserData() async {
     final User? user = auth.currentUser;
+    var tempDoc = user?.uid;
+    Get.find<FirebaseRequests>().userDoc = tempDoc.toString();
     try {
       await firestore
           .collection("User Information")
@@ -37,7 +40,7 @@ class FirebaseRequests extends GetxController {
           Get.find<SignInUp>().admin = data?['admin'];
           if (Get.find<SignInUp>().admin == "not admin") {
             Get.find<SignInUp>().adminAcc = false;
-          } else {
+          } else if (Get.find<SignInUp>().admin == "admin") {
             Get.find<SignInUp>().adminAcc = true;
           }
         }
@@ -45,6 +48,7 @@ class FirebaseRequests extends GetxController {
     } on Exception catch (e) {
       log("FAILED $e");
     }
+    await Get.find<UpdateCheck>().getDaysAdherence();
   }
 
   //

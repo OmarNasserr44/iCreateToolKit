@@ -29,7 +29,7 @@ class SignInUp extends GetxController {
   ];
   //
   String admin = 'not admin'.obs();
-  bool adminAcc = true.obs();
+  bool adminAcc = false.obs();
   //
   String name = ''.obs();
   String title = ''.obs();
@@ -85,7 +85,7 @@ class SignInUp extends GetxController {
     }
   }
 
-  void inputData() async {
+  Future<void> inputData() async {
     final User? user = auth.currentUser;
     try {
       await firestore.collection("User Information").doc(user?.uid).set({

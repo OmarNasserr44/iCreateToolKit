@@ -22,6 +22,7 @@ class _NavMainBottomState extends State<NavMainBottom> {
     CreateNewTaskScreen(),
     Settings(),
   ];
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;

@@ -9,7 +9,10 @@ import 'package:icreate_attendence/Requests/SignInUpFirebase.dart';
 import 'package:icreate_attendence/Widgets_/Button.dart';
 import 'package:icreate_attendence/Widgets_/CustText.dart';
 
+import '../Colors/Colors.dart';
+import '../GetX Controllers/GoogleSheets.dart';
 import '../GetX Controllers/shared_preferences.dart';
+import '../GetX Controllers/updateCheck.dart';
 
 class TaskCardDetails extends StatelessWidget {
   TaskCardDetails(
@@ -77,6 +80,21 @@ class TaskCardDetails extends StatelessWidget {
             children: [
               SizedBox(
                 height: screenSize.height / 10,
+                child: Row(
+                  children: [
+                    MaterialButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      minWidth: screenSize.width / 18,
+                      child: Icon(
+                        Icons.arrow_back_ios_rounded,
+                        size: screenSize.width / 13,
+                        color: mainTextColor,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(
                 height: screenSize.height / 25,
@@ -143,10 +161,24 @@ class TaskCardDetails extends StatelessWidget {
               ),
               CustButton(
                   text: "Done",
-                  onTap: () {
-                    log("${tasksController.tasksProgress[date][title][0]}");
+                  onTap: () async {
+                    String tempMile = "";
+                    for (int i = 0; i < milestones.length; i++) {
+                      tempMile = "$tempMile ${milestones[i]}";
+                    }
                     Get.find<TasksController>()
                         .taskDone(date, title, context, screenSize);
+                    if (Get.find<TasksController>().publishTaskToGsheets) {
+                      final user = {
+                        "task assigned date": date.toString(),
+                        "name": Get.find<SignInUp>().name.toString(),
+                        "task's title": title.toString(),
+                        "task's milestones": tempMile.toString(),
+                        "task's done time":
+                            Get.find<UpdateCheck>().currentTime.toString(),
+                      };
+                      await GoogleSheetsController.insertHistory([user]);
+                    }
                   },
                   width: screenSize.width / 1.2)
             ],

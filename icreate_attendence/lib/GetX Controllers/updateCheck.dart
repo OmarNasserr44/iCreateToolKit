@@ -4,10 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icreate_attendence/GetX%20Controllers/GoogleSheets.dart';
 import 'package:icreate_attendence/Requests/FirebaseRequests.dart';
 import 'package:intl/intl.dart';
 
 import '../Colors/Colors.dart';
+import '../Requests/SignInUpFirebase.dart';
 
 class UpdateCheck extends GetxController {
   List<bool> status = [false, false, false].obs();
@@ -87,6 +89,44 @@ class UpdateCheck extends GetxController {
           Map<String, dynamic>? data = value.data();
           Get.find<UpdateCheck>().currentStatus = data?['current status'];
           log("Current Status ${Get.find<UpdateCheck>().currentStatus}");
+        }
+      });
+    } on Exception catch (e) {
+      log("FAILED $e");
+    }
+  }
+
+  Future<void> getDaysAdherence() async {
+    final User? user = auth.currentUser;
+    try {
+      await firestore
+          .collection("Adherence")
+          .doc(user?.uid)
+          .get()
+          .then((value) {
+        if (!value.exists) {
+          log("something went Wrong");
+        }
+        if (value.exists) {
+          Map<String, dynamic>? data = value.data();
+          Get.find<UpdateCheck>().days = data?['days'];
+          log("days ${Get.find<UpdateCheck>().days}");
+          if (Get.find<UpdateCheck>()
+              .days
+              .containsKey(Get.find<UpdateCheck>().todayDate)) {
+            Get.find<UpdateCheck>().available = List<String>.from(
+                Get.find<UpdateCheck>().days[Get.find<UpdateCheck>().todayDate]
+                    ['available']);
+            Get.find<UpdateCheck>().away = List<String>.from(
+                Get.find<UpdateCheck>().days[Get.find<UpdateCheck>().todayDate]
+                    ['away']);
+            Get.find<UpdateCheck>().offline = Get.find<UpdateCheck>()
+                .days[Get.find<UpdateCheck>().todayDate]['shift hours'];
+            Get.find<UpdateCheck>().totalAwayHours = Get.find<UpdateCheck>()
+                .days[Get.find<UpdateCheck>().todayDate]['total away time'];
+            Get.find<UpdateCheck>().totalWorkingHours = Get.find<UpdateCheck>()
+                .days[Get.find<UpdateCheck>().todayDate]['total working time'];
+          }
         }
       });
     } on Exception catch (e) {
@@ -289,7 +329,37 @@ class UpdateCheck extends GetxController {
         log("day ${Get.find<UpdateCheck>().day}");
         log("days ${Get.find<UpdateCheck>().days}");
         await Get.find<FirebaseRequests>().updateDays();
+        final user = {
+          "day": Get.find<UpdateCheck>().todayDate.toString(),
+          "name": Get.find<SignInUp>().name.toString(),
+          "total working hours": Get.find<UpdateCheck>()
+              .days[Get.find<UpdateCheck>().todayDate]["total working time"]
+              .toString(),
+          "shift hours": Get.find<UpdateCheck>()
+              .days[Get.find<UpdateCheck>().todayDate]["shift hours"]
+              .toString(),
+          "first available time": Get.find<UpdateCheck>()
+              .days[Get.find<UpdateCheck>().todayDate]["available"][0]
+              .toString(),
+          "offline time": Get.find<UpdateCheck>()
+              .days[Get.find<UpdateCheck>().todayDate]["offline"]
+              .toString(),
+          "total away time": Get.find<UpdateCheck>()
+              .days[Get.find<UpdateCheck>().todayDate]["total away time"]
+              .toString(),
+        };
+        await GoogleSheetsController.insert([user]);
       }
     }
   }
 }
+
+// final user = {
+//   "day": "22-5-2022",
+//   "name": "Omar",
+//   "total working hours": "20",
+//   "shift hours": "22",
+//   "first available time": "18:00",
+//   "offline time": "23:00",
+//   "total away hours": "02:00",
+// };

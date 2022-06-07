@@ -112,13 +112,13 @@ class TasksController extends GetxController {
     Colors.orange
   ];
   RxList<Widget> cardsRow = RxList();
-  void updateCardsRow() {
+  void updateCardsRow() async {
     Get.find<TasksController>().cardsRow.value =
-        Get.find<TasksController>().setCards();
+        await Get.find<TasksController>().setCards();
     Get.find<TasksController>().cardsRow.refresh();
   }
 
-  List<Widget> setCards() {
+  Future<List<Widget>> setCards() async {
     int count = 0;
     List<Widget> tempCards = [];
     List<String> texts = [];
@@ -127,6 +127,7 @@ class TasksController extends GetxController {
     Map<String, dynamic> percentage = {};
     List<List<String>> milestonesTemp = [];
     List<int> colors2 = [];
+
     //
     //use this in if condition if you want to show today's tasks at the draggable sheet
     //Get.find<TasksController>()
@@ -275,6 +276,7 @@ class TasksController extends GetxController {
         ],
       ));
     }
+
     return tempCards;
   }
   //
@@ -347,8 +349,9 @@ class TasksController extends GetxController {
     };
   }
 
+  bool publishTaskToGsheets = false.obs();
   void taskDone(
-      String date, String title, BuildContext context, Size screenSize) {
+      String date, String title, BuildContext context, Size screenSize) async {
     int index = 0;
     int dayIndex = 0;
     dayIndex = Get.find<TasksController>().stringTasksKeys.indexOf(date);
@@ -366,6 +369,7 @@ class TasksController extends GetxController {
     //
     if (checkDone.length ==
         Get.find<TasksController>().tasksProgress[date][title].length) {
+      Get.find<TasksController>().publishTaskToGsheets = true;
       //
       index = Get.find<TasksController>().tasksTitle[dayIndex].indexOf(title);
       //
@@ -421,7 +425,7 @@ class TasksController extends GetxController {
           Get.find<TasksController>().tasksProgress.clear();
           Get.find<TasksController>().cardsRow.clear();
           Get.find<TasksController>().cardsRow.value =
-              Get.find<TasksController>().setCards();
+              await Get.find<TasksController>().setCards();
           // Get.find<TasksController>().cardsRow.add(Column(
           //       children: [
           //         SizedBox(
@@ -440,7 +444,7 @@ class TasksController extends GetxController {
         //
         else {
           Get.find<TasksController>().cardsRow.value =
-              Get.find<TasksController>().setCards();
+              await Get.find<TasksController>().setCards();
           Get.find<TasksController>().tasksKeys =
               Get.find<TasksController>().tasks.keys.toList();
           Get.find<TasksController>().updateTasks();
@@ -451,7 +455,7 @@ class TasksController extends GetxController {
       //
       else {
         Get.find<TasksController>().cardsRow.value =
-            Get.find<TasksController>().setCards();
+            await Get.find<TasksController>().setCards();
 
         Get.find<TasksController>().createNewTask(date);
       }
@@ -462,6 +466,7 @@ class TasksController extends GetxController {
 
       //
     } else {
+      Get.find<TasksController>().publishTaskToGsheets = false;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         backgroundColor: mainTextColor,
         content: Text(
@@ -561,6 +566,19 @@ class TasksController extends GetxController {
     final User? user = auth.currentUser;
     Map<dynamic, dynamic> tempMilestone = {};
     Map<dynamic, dynamic> tempProgressBool = {};
+    Get.find<TasksController>().tasksTitle = [
+      [""]
+    ];
+    Get.find<TasksController>().tasksDesc = [
+      [""]
+    ];
+    Get.find<TasksController>().tasksTimesStart = [
+      [""]
+    ];
+    Get.find<TasksController>().tasksTimesEnd = [
+      [""]
+    ];
+    Get.find<TasksController>().stringTasksKeys = [""];
     try {
       await firestore.collection("Tasks").doc(user?.uid).get().then((value) {
         if (!value.exists) {
