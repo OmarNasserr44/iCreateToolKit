@@ -64,6 +64,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             MainBanner(
+              home: true,
               height: 0,
               childWidget: Column(
                 children: [
@@ -71,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                     height: screenSize.height / 25,
                   ),
                   SizedBox(
-                    height: screenSize.height / 7,
+                    height: screenSize.height / 6,
                     width: screenSize.width / 1.2,
                     child: Row(
                       children: [

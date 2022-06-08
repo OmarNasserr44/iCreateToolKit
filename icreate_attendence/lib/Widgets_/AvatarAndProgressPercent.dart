@@ -23,8 +23,8 @@ class AvatarAndProgressPercent extends StatelessWidget {
       child: Center(
         child: Obx(
           () => CircularPercentIndicator(
-            radius: 50,
-            lineWidth: 7,
+            radius: screenSize.width / 7.2,
+            lineWidth: screenSize.width / 50,
             percent: Get.find<TasksController>().setPercent(),
             progressColor: progressColor,
             backgroundColor: progressBackgroundColor,

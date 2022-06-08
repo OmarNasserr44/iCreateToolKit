@@ -86,6 +86,7 @@ class SignInUp extends GetxController {
   }
 
   Future<void> inputData() async {
+    Get.find<TasksController>().tasks = {};
     final User? user = auth.currentUser;
     try {
       await firestore.collection("User Information").doc(user?.uid).set({

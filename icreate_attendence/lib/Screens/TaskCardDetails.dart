@@ -97,7 +97,7 @@ class TaskCardDetails extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: screenSize.height / 25,
+                height: screenSize.height / 20,
                 width: screenSize.width / 1.1,
                 child: CustText(
                   text: 'Task Details',

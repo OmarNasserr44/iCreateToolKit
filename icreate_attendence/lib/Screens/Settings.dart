@@ -81,7 +81,7 @@ class _SettingsState extends State<Settings> {
         ),
         SizedBox(
           width: screenSize.width / 1.1,
-          height: screenSize.height / 20,
+          height: screenSize.height / 17,
           child: CustText(text: "Settings", fontSize: screenSize.width / 8),
         ),
         SizedBox(
