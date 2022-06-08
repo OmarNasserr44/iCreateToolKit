@@ -18,7 +18,7 @@ class CustTextField extends StatefulWidget {
     required this.onEditingComplete,
     required this.validator,
     this.validate = false,
-    this.inputType = TextInputType.name,
+    this.inputType = TextInputType.text,
     this.pass = false,
     this.maxLength = 20,
     this.mileStone = false,

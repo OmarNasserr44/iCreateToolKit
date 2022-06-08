@@ -51,10 +51,17 @@ dependencies:
   percent_indicator: ^4.0.1
   google_fonts: ^2.3.2
   flutter_local_notifications: ^9.6.0
+  flutter_launcher_icons: ^0.9.3
+  flutter_lints: 1.0.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "Assets/Images/logo.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
