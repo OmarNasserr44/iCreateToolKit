@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icreate_attendence/Colors/Colors.dart';
+import 'package:icreate_attendence/GetX%20Controllers/AdminsController.dart';
 import 'package:icreate_attendence/GetX%20Controllers/NewTaskController.dart';
 import 'package:icreate_attendence/GetX%20Controllers/TasksController.dart';
 import 'package:icreate_attendence/Requests/FirebaseRequests.dart';
@@ -211,6 +212,8 @@ class _LogInScreenState extends State<LogInScreen> {
                               await firebaseRequests.currentUserData();
                               await Get.find<TasksController>().getUserTasks();
                               if (signInUp.adminAcc) {
+                                Get.find<AdminController>().getAdminTasks();
+                                Get.find<NewTaskController>().usersNames = [""];
                                 Get.find<NewTaskController>().getFieldDataQuery(
                                     "User Information", "ID", "Name");
                               }

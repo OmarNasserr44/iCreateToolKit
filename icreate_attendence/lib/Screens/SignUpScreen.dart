@@ -13,6 +13,7 @@ import 'package:icreate_attendence/Widgets_/Button.dart';
 import 'package:icreate_attendence/Widgets_/CustText.dart';
 import 'package:icreate_attendence/Widgets_/CustTextField.dart';
 
+import '../GetX Controllers/AdminsController.dart';
 import '../GetX Controllers/NewTaskController.dart';
 import '../GetX Controllers/shared_preferences.dart';
 
@@ -303,6 +304,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               await firebaseRequests.currentUserData();
                               await Get.find<TasksController>().getUserTasks();
                               if (Get.find<SignInUp>().adminAcc == true) {
+                                Get.find<AdminController>().getAdminTasks();
+                                Get.find<NewTaskController>().usersNames = [""];
                                 await Get.find<NewTaskController>()
                                     .getFieldDataQuery(
                                         "User Information", "ID", "Name");

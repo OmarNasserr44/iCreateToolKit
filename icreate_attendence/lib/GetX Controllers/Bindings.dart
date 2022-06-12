@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:icreate_attendence/GetX%20Controllers/AdminsController.dart';
 import 'package:icreate_attendence/GetX%20Controllers/NewTaskController.dart';
 import 'package:icreate_attendence/GetX%20Controllers/Push_Notification.dart';
 import 'package:icreate_attendence/GetX%20Controllers/TasksController.dart';
@@ -16,6 +17,7 @@ class AllControllerBindings implements Bindings {
     Get.lazyPut<UpdateCheck>(() => UpdateCheck(), fenix: true);
     Get.lazyPut<NewTaskController>(() => NewTaskController(), fenix: true);
     Get.lazyPut<PushNotification>(() => PushNotification(), fenix: true);
+    Get.lazyPut<AdminController>(() => AdminController(), fenix: true);
     Get.lazyPut<SharedPreferencesController>(
         () => SharedPreferencesController(),
         fenix: true);

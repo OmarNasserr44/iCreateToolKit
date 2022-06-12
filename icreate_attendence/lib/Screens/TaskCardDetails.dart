@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icreate_attendence/GetX%20Controllers/AdminsController.dart';
 import 'package:icreate_attendence/GetX%20Controllers/TasksController.dart';
 import 'package:icreate_attendence/Requests/SignInUpFirebase.dart';
 import 'package:icreate_attendence/Widgets_/Button.dart';
@@ -49,6 +50,9 @@ class TaskCardDetails extends StatelessWidget {
                   onChanged: (bool? value) {
                     tasksController.tasksProgress[date][title][i] = value;
                     tasksController.tasksProgress.refresh();
+                    Get.find<AdminController>()
+                            .adminTasks[Get.find<SignInUp>().name][date]
+                        ['tasks progress'][title][i] = value;
                   },
                   value: Get.find<TasksController>().tasksProgress[date] == null
                       ? false
@@ -149,6 +153,7 @@ class TaskCardDetails extends StatelessWidget {
                       tasksController.updateCardsRow();
                       tasksController.setPercent();
                       await Get.find<TasksController>().createNewTask(date);
+                      await Get.find<AdminController>().updateAdminTasks();
                       Navigator.pop(context);
                     } else {
                       Get.find<SharedPreferencesController>()
@@ -168,6 +173,58 @@ class TaskCardDetails extends StatelessWidget {
                     }
                     Get.find<TasksController>()
                         .taskDone(date, title, context, screenSize);
+
+                    ///
+                    int index = Get.find<AdminController>()
+                        .adminTasks[Get.find<SignInUp>().name][date]
+                            ['Tasks Titles']
+                        .indexOf(title);
+                    Get.find<AdminController>()
+                        .adminTasks[Get.find<SignInUp>().name][date]
+                            ['Milestones']
+                        .remove(title);
+                    Get.find<AdminController>()
+                        .adminTasks[Get.find<SignInUp>().name][date]
+                            ['tasks progress']
+                        .remove(title);
+                    Get.find<AdminController>()
+                        .adminTasks[Get.find<SignInUp>().name][date]
+                            ['Tasks Description']
+                        .removeAt(index);
+                    Get.find<AdminController>()
+                        .adminTasks[Get.find<SignInUp>().name][date]
+                            ['Tasks Titles']
+                        .remove(title);
+                    Get.find<AdminController>()
+                        .adminTasks[Get.find<SignInUp>().name][date]
+                            ['Tasks Start Times']
+                        .removeAt(index);
+                    Get.find<AdminController>()
+                        .adminTasks[Get.find<SignInUp>().name][date]
+                            ['Tasks End Times']
+                        .removeAt(index);
+                    log("lenn ${Get.find<AdminController>().adminTasks[Get.find<SignInUp>().name][date]['Milestones']}");
+                    if (Get.find<AdminController>()
+                        .adminTasks[Get.find<SignInUp>().name][date]
+                            ['Milestones']
+                        .isEmpty) {
+                      log("IS EMPTY");
+                      Get.find<AdminController>()
+                          .adminTasks[Get.find<SignInUp>().name]
+                          .remove(date);
+                    }
+                    if (Get.find<AdminController>()
+                        .adminTasks[Get.find<SignInUp>().name]
+                        .isEmpty) {
+                      Get.find<AdminController>()
+                          .adminTasks
+                          .remove(Get.find<SignInUp>().name);
+                    }
+                    log("ADMIN TASKS ${Get.find<AdminController>().adminTasks}");
+                    Get.find<AdminController>().updateAdminCards();
+                    Get.find<AdminController>().updateAdminTasks();
+
+                    ///
                     if (Get.find<TasksController>().publishTaskToGsheets) {
                       final user = {
                         "task assigned date": date.toString(),
@@ -177,6 +234,7 @@ class TaskCardDetails extends StatelessWidget {
                         "task's done time":
                             Get.find<UpdateCheck>().currentTime.toString(),
                       };
+
                       await GoogleSheetsController.insertHistory([user]);
                     }
                   },

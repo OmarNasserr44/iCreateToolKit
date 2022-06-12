@@ -6,6 +6,7 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icreate_attendence/GetX%20Controllers/AdminsController.dart';
 import 'package:icreate_attendence/GetX%20Controllers/NewTaskController.dart';
 import 'package:icreate_attendence/Requests/SignInUpFirebase.dart';
 import 'package:icreate_attendence/Widgets_/Button.dart';
@@ -282,13 +283,15 @@ class CreateNewTaskScreen extends StatelessWidget {
                             tasksController.mileStonesString.isNotEmpty) {
                           //
                           signInUp.showAlertDialog(context);
-
-                          if (Get.find<NewTaskController>().userDocument ==
+                          if (Get.find<NewTaskController>()
+                                  .implementInUser
+                                  .value ==
                               "") {
                             Get.find<NewTaskController>().newTask();
                             await tasksController.createNewTask(
                                 Get.find<TasksController>().trackDate);
                           } else {
+                            log("NAME ${Get.find<NewTaskController>().implementInUser.value}");
                             await newTaskController.getEmployeeTask(
                                 newTaskController.userDocument);
                             log("employee tasks ${newTaskController.employeeTasks}");
@@ -297,13 +300,37 @@ class CreateNewTaskScreen extends StatelessWidget {
                             newTaskController.updateEmployeeData();
                             //
                             //function to update the selected employee in firebase
-                            newTaskController.updateEmployeeTasks(
+                            await newTaskController.updateEmployeeTasks(
                                 newTaskController.userDocument);
-                            newTaskController.implementInUser.value = "";
-                            newTaskController.implementInUser.refresh();
+                            //
+                            //function to update adminTasks array
+                            Get.find<AdminController>().updateAdminData();
+                            //
+                            //update adminTasks Firebase
+                            await Get.find<AdminController>()
+                                .updateAdminTasks();
+                            //
+                            //
+                            if (Get.find<NewTaskController>()
+                                    .implementInUser
+                                    .value ==
+                                signInUp.name) {
+                              ///
+                              ///
+                              ///
+                              newTaskController.newTask();
+
+                              ///
+                              ///
+                              ///
+                              // Get.find<NewTaskController>().newTask();
+                              await tasksController.createNewTask(
+                                  Get.find<TasksController>().trackDate);
+                            }
                           }
                           //
-
+                          newTaskController.implementInUser.value = "";
+                          newTaskController.implementInUser.refresh();
                           //pass selected user doc, to apply the changes on the selected user file
 
                           tasksController.mileStonesString.clear();

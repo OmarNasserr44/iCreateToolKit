@@ -31,7 +31,7 @@ class Calender extends StatelessWidget {
                           "${tasksController.months[tasksController.month - 1]}, ${tasksController.year}",
                       fontSize: screenSize.width / 15)),
               SizedBox(height: screenSize.height / 40),
-              Week(),
+              SizedBox(height: screenSize.height / 20, child: Week()),
               SizedBox(
                 height: screenSize.height / 80,
               ),

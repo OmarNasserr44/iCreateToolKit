@@ -3,7 +3,7 @@
    <application
         android:label="iCreate Workspace"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -19,6 +19,9 @@
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
+              /><meta-data
+              android:name="io.flutter.embedding.android.SplashScreenDrawable"
+              android:resource="@drawable/logo"
               />
             <meta-data
               android:name="com.google.firebase.messaging.default_notification_channel_id"

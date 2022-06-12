@@ -4,12 +4,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icreate_attendence/GetX%20Controllers/AdminsController.dart';
 import 'package:icreate_attendence/GetX%20Controllers/Push_Notification.dart';
 import 'package:icreate_attendence/GetX%20Controllers/TasksController.dart';
 import 'package:icreate_attendence/Requests/SignInUpFirebase.dart';
+import 'package:icreate_attendence/Screens/AdminTasksScreen.dart';
 import '../Requests/FirebaseRequests.dart';
+import '../Widgets_/AdminRowCards.dart';
 import '../Widgets_/AvatarAndProgressPercent.dart';
 import '../Widgets_/Banner.dart';
+import '../Widgets_/Card.dart';
 import '../Widgets_/CustText.dart';
 import '../Widgets_/DraggableSheet.dart';
 import '../Widgets_/NameAndTitleInBanner.dart';
@@ -76,8 +80,12 @@ class _HomePageState extends State<HomePage> {
                     width: screenSize.width / 1.2,
                     child: Row(
                       children: [
-                        AvatarAndProgressPercent(
-                          imgPath: "Assets/Images/avatarPNG.png",
+                        SizedBox(
+                          height: screenSize.height / 7,
+                          width: screenSize.width / 3,
+                          child: AvatarAndProgressPercent(
+                            imgPath: "Assets/Images/avatarPNG.png",
+                          ),
                         ),
                         NameAndTitleInBanner(
                           title: signInUp.title,
@@ -104,19 +112,39 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         SizedBox(
                           height: screenSize.height / 14,
-                          width: screenSize.width / 1.2,
+                          width: screenSize.width / 1.1,
                           child: Row(
                             children: [
-                              CustText(
-                                text: "My Tasks",
-                                fontSize: screenSize.width / 14,
+                              SizedBox(
+                                height: screenSize.height / 30,
+                                width: screenSize.width / 4.2,
+                                child: CustText(
+                                  text: "My Tasks",
+                                  fontSize: screenSize.width / 14,
+                                ),
                               ),
                               SizedBox(
-                                width: screenSize.width / 2.1,
+                                width: screenSize.width / 4,
                               ),
-                              // IconInsideCircle(
-                              //   newTask: false,
-                              // ),
+                              signInUp.adminAcc
+                                  ? MaterialButton(
+                                      onPressed: () async {
+                                        ///////
+                                        Get.find<AdminController>()
+                                            .updateAdminCards();
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AdminTasks()));
+                                      },
+                                      padding: EdgeInsets.zero,
+                                      color: Colors.grey[200],
+                                      minWidth: screenSize.width / 3.3,
+                                      child: CustText(
+                                          text: "Admin Tasks",
+                                          fontSize: screenSize.width / 14),
+                                    )
+                                  : Container(),
                             ],
                           ),
                         ),

@@ -84,6 +84,12 @@ class NewTaskController extends GetxController {
     } else {
       if (tasksController.stringTasksKeys[0] == "") {
         tasksController.stringTasksKeys[0] = tasksController.trackDate;
+        if (Get.find<TasksController>().tasksTitle.isEmpty) {
+          Get.find<TasksController>().tasksTitle.add([""]);
+          Get.find<TasksController>().tasksDesc.add([""]);
+          Get.find<TasksController>().tasksTimesStart.add([""]);
+          Get.find<TasksController>().tasksTimesEnd.add([""]);
+        }
       } else {
         tasksController.stringTasksKeys.add(tasksController.trackDate);
         index =
@@ -195,7 +201,6 @@ class NewTaskController extends GetxController {
       tasksController.tasksProgress[tasksController.trackDate]
           [tasksController.trackTitle] = progress;
     }
-    //
   }
   //
   //
@@ -239,7 +244,6 @@ class NewTaskController extends GetxController {
         .employeeTasks
         .keys
         .contains(tasksController.trackDate)) {
-      log("HEREEEE");
       Get.find<NewTaskController>().employeeTasks[tasksController.trackDate] =
           {};
       Get.find<NewTaskController>().employeeTasks[tasksController.trackDate]

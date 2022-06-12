@@ -17,7 +17,7 @@ class AvatarAndProgressPercent extends StatelessWidget {
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
 
-    return SizedBox(
+    return Container(
       height: screenSize.height / 7.5,
       width: screenSize.width / 3,
       child: Center(

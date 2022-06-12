@@ -86,7 +86,6 @@ class SignInUp extends GetxController {
   }
 
   Future<void> inputData() async {
-    Get.find<TasksController>().tasks = {};
     final User? user = auth.currentUser;
     try {
       await firestore.collection("User Information").doc(user?.uid).set({
@@ -102,9 +101,24 @@ class SignInUp extends GetxController {
       log('ERROR IN INPUT DATA $e');
     }
     try {
-      Get.find<TasksController>().updateOneTask(Get.find<SignInUp>().todayDate);
-      Get.find<TasksController>().tasks[Get.find<SignInUp>().todayDate] =
-          Get.find<TasksController>().task;
+      Get.find<TasksController>().tasks = {};
+      Get.find<TasksController>().milestonesMap = {};
+      Get.find<TasksController>().tasksProgress.clear();
+      Get.find<TasksController>().tasksTitle = [
+        [""]
+      ];
+      Get.find<TasksController>().tasksDesc = [
+        [""]
+      ];
+      Get.find<TasksController>().tasksTimesStart = [
+        [""]
+      ];
+      Get.find<TasksController>().tasksTimesEnd = [
+        [""]
+      ];
+      // Get.find<TasksController>().updateOneTask(Get.find<SignInUp>().todayDate);
+      // Get.find<TasksController>().tasks[Get.find<SignInUp>().todayDate] =
+      //     Get.find<TasksController>().task;
       //
       await firestore.collection("Tasks").doc(user?.uid).set({
         "Tasks": Get.find<TasksController>().tasks,

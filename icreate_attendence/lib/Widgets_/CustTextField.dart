@@ -52,6 +52,7 @@ class _CustTextFieldState extends State<CustTextField> {
     return Row(
       children: [
         SizedBox(
+          height: screenSize.height / 11,
           width: widget.mileStone
               ? screenSize.width / 1.6
               : widget.date

@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Requests/FirebaseRequests.dart';
 import '../Requests/SignInUpFirebase.dart';
+import 'AdminsController.dart';
 import 'NewTaskController.dart';
 import 'TasksController.dart';
 
@@ -76,6 +77,8 @@ class SharedPreferencesController extends GetxController {
           await Get.find<FirebaseRequests>().currentUserData();
           await Get.find<TasksController>().getUserTasks();
           if (Get.find<SignInUp>().adminAcc) {
+            Get.find<AdminController>().getAdminTasks();
+            Get.find<NewTaskController>().usersNames = [""];
             Get.find<NewTaskController>()
                 .getFieldDataQuery("User Information", "ID", "Name");
           }

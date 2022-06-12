@@ -1,9 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:icreate_attendence/Screens/AdminTaskDetails.dart';
 import 'package:icreate_attendence/Screens/TaskCardDetails.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
+import '../GetX Controllers/AdminsController.dart';
+import '../Requests/SignInUpFirebase.dart';
 import 'CustText.dart';
 
 class CustCard extends StatelessWidget {
@@ -14,7 +19,9 @@ class CustCard extends StatelessWidget {
       required this.percent,
       required this.desc,
       required this.milestones,
-      required this.date});
+      required this.date,
+      this.admin = false,
+      this.name = ""});
 
   final String mainText;
   final String desc;
@@ -23,18 +30,28 @@ class CustCard extends StatelessWidget {
   final double percent;
   final List<String> milestones;
   final String date;
+  final bool admin;
+  final String name;
 
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
-        Get.to(() => TaskCardDetails(
-              desc: desc,
-              date: date,
-              milestones: milestones,
-              title: mainText,
-            ));
+        admin
+            ? Get.to(() => AdminTaskDetails(
+                  desc: desc,
+                  date: date,
+                  milestones: milestones,
+                  title: mainText,
+                  name: name,
+                ))
+            : Get.to(() => TaskCardDetails(
+                  desc: desc,
+                  date: date,
+                  milestones: milestones,
+                  title: mainText,
+                ));
       },
       child: Container(
         height: screenSize.height / 4,
@@ -56,10 +73,21 @@ class CustCard extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: screenSize.height / 100,
+              height: admin ? screenSize.height / 50 : screenSize.height / 100,
+              child: admin
+                  ? Center(
+                      child: Text(
+                        name,
+                        style: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  : Container(),
             ),
             Container(
-              height: screenSize.height / 22,
+              height: admin ? screenSize.height / 40 : screenSize.height / 22,
               width: screenSize.width / 3.5,
               // color: Colors.green,
               child: Column(

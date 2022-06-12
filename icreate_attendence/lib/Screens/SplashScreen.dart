@@ -17,6 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
+    // return Container();
     return Obx(
       () => AnimatedSplashScreen(
           splash: Container(
@@ -32,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       height: screenSize.height / 3,
                       width: screenSize.width / 1.1,
                       child: Image.asset(
-                        "Assets/Images/iCreate logo PNG.png",
+                        "Assets/Images/logo.png",
                         fit: BoxFit.fill,
                       )),
                 ),
@@ -41,8 +42,8 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
           backgroundColor: Colors.white,
           splashIconSize: screenSize.width / 1,
-          duration: 2500,
-          splashTransition: SplashTransition.fadeTransition,
+          duration: 1,
+          splashTransition: SplashTransition.rotationTransition,
           nextScreen: Get.find<SharedPreferencesController>().splashLogin.value
               ? NavMainBottom()
               : LogInScreen()),

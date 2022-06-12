@@ -123,6 +123,7 @@ class TasksController extends GetxController {
     List<Widget> tempCards = [];
     List<String> texts = [];
     List<String> desc = [];
+    List<String> names = [];
     Map<String, String> date = {};
     Map<String, dynamic> percentage = {};
     List<List<String>> milestonesTemp = [];
@@ -137,80 +138,87 @@ class TasksController extends GetxController {
       //
       //loop over each date
       //
-      for (int i = 0;
-          i < Get.find<TasksController>().stringTasksKeys.length;
-          i++) {
+      Get.find<TasksController>().tasksKeys =
+          Get.find<TasksController>().tasks.keys.toList();
+      log("tasks string ${Get.find<TasksController>().tasksKeys.length}");
+      log("tasks string ${Get.find<TasksController>().tasksKeys}");
+      for (int i = 0; i < Get.find<TasksController>().tasksKeys.length; i++) {
         //
         //loop over each milestone in each title inside specified date
         //this will store milestone in each title
         //
-        for (int j = 0;
-            j <
-                Get.find<TasksController>()
-                    .milestonesMap[
-                        Get.find<TasksController>().stringTasksKeys[i]]
-                    .length;
-            j++) {
-          milestonesTemp.add(Get.find<TasksController>()
-                  .milestonesMap[Get.find<TasksController>().stringTasksKeys[i]]
-              [Get.find<TasksController>().tasksTitle[i][j]]);
-        }
-        //
-        //loop over each title in a specified date to store date of each title
-        //this will be used in card widget to update the right task progress
-        //as we can use progress of each title by calling the tasksProgress map which needs
-        //the date to access desired titles
-        //
-        for (int k = 0;
-            k <
-                Get.find<TasksController>()
-                    .tasks[Get.find<TasksController>().stringTasksKeys[i]]
-                        ["Tasks Titles"]
-                    .length;
-            k++) {
-          //
-          date[Get.find<TasksController>()
-                      .tasks[Get.find<TasksController>().stringTasksKeys[i]]
-                  ["Tasks Titles"][k]] =
-              Get.find<TasksController>().stringTasksKeys[i];
-
-          //
-          //loop over milestones (task progress values) of a specified task and count every true value
-          //then divide by the milestones length to get percent of done milestones of a
-          //specified task, then assign that percentage to the task title
-          //
-          double tempPercent = 0;
-          int trueCount = 0;
-          for (int z = 0;
-              z <
+        if (Get.find<TasksController>()
+                    .tasks[Get.find<TasksController>().tasksKeys[i].toString()]
+                ["Milestones"] !=
+            null) {
+          for (int j = 0;
+              j <
                   Get.find<TasksController>()
-                      .tasksProgress[
-                          Get.find<TasksController>().stringTasksKeys[i]][
-                          Get.find<TasksController>().tasks[
-                              Get.find<TasksController>()
-                                  .stringTasksKeys[i]]["Tasks Titles"][k]]
+                      .milestonesMap[
+                          Get.find<TasksController>().stringTasksKeys[i]]
                       .length;
-              z++) {
-            if (Get.find<TasksController>().tasksProgress[
-                        Get.find<TasksController>().stringTasksKeys[i]][
-                    Get.find<TasksController>().tasks[
-                            Get.find<TasksController>().stringTasksKeys[i]]
-                        ["Tasks Titles"][k]][z] ==
-                true) {
-              trueCount = trueCount + 1;
-            }
+              j++) {
+            milestonesTemp.add(Get.find<TasksController>().milestonesMap[
+                    Get.find<TasksController>().stringTasksKeys[i]]
+                [Get.find<TasksController>().tasksTitle[i][j]]);
           }
-          tempPercent = trueCount /
-              Get.find<TasksController>()
-                  .tasksProgress[Get.find<TasksController>().stringTasksKeys[i]]
-                      [Get.find<TasksController>().tasks[
-                              Get.find<TasksController>().stringTasksKeys[i]]
-                          ["Tasks Titles"][k]]
-                  .length;
           //
-          percentage[Get.find<TasksController>()
-                  .tasks[Get.find<TasksController>().stringTasksKeys[i]]
-              ["Tasks Titles"][k]] = tempPercent;
+          //loop over each title in a specified date to store date of each title
+          //this will be used in card widget to update the right task progress
+          //as we can use progress of each title by calling the tasksProgress map which needs
+          //the date to access desired titles
+          //
+          for (int k = 0;
+              k <
+                  Get.find<TasksController>()
+                      .tasks[Get.find<TasksController>().stringTasksKeys[i]]
+                          ["Tasks Titles"]
+                      .length;
+              k++) {
+            //
+            date[Get.find<TasksController>()
+                        .tasks[Get.find<TasksController>().stringTasksKeys[i]]
+                    ["Tasks Titles"][k]] =
+                Get.find<TasksController>().stringTasksKeys[i];
+
+            //
+            //loop over milestones (task progress values) of a specified task and count every true value
+            //then divide by the milestones length to get percent of done milestones of a
+            //specified task, then assign that percentage to the task title
+            //
+            double tempPercent = 0;
+            int trueCount = 0;
+            for (int z = 0;
+                z <
+                    Get.find<TasksController>()
+                        .tasksProgress[
+                            Get.find<TasksController>().stringTasksKeys[i]][
+                            Get.find<TasksController>().tasks[
+                                Get.find<TasksController>()
+                                    .stringTasksKeys[i]]["Tasks Titles"][k]]
+                        .length;
+                z++) {
+              if (Get.find<TasksController>().tasksProgress[
+                          Get.find<TasksController>().stringTasksKeys[i]][
+                      Get.find<TasksController>().tasks[
+                              Get.find<TasksController>().stringTasksKeys[i]]
+                          ["Tasks Titles"][k]][z] ==
+                  true) {
+                trueCount = trueCount + 1;
+              }
+            }
+            tempPercent = trueCount /
+                Get.find<TasksController>()
+                    .tasksProgress[Get.find<TasksController>()
+                        .stringTasksKeys[i]][Get.find<TasksController>().tasks[
+                            Get.find<TasksController>().stringTasksKeys[i]]
+                        ["Tasks Titles"][k]]
+                    .length;
+            //
+            percentage[Get.find<TasksController>()
+                    .tasks[Get.find<TasksController>().stringTasksKeys[i]]
+                ["Tasks Titles"][k]] = tempPercent;
+          }
         }
       }
       for (int i = 0; i < Get.find<TasksController>().tasksTitle.length; i++) {
@@ -409,34 +417,30 @@ class TasksController extends GetxController {
         //data similar to a new signed up user to not miss with the database structure
         //
         if (Get.find<TasksController>().tasks.isEmpty) {
-          Get.find<TasksController>().tasksTitle = [
-            [""]
-          ];
-          Get.find<TasksController>().tasksDesc = [
-            [""]
-          ];
-          Get.find<TasksController>().tasksTimesStart = [
-            [""]
-          ];
-          Get.find<TasksController>().tasksTimesEnd = [
-            [""]
-          ];
+          // Get.find<TasksController>().tasksTitle = [
+          //   [""]
+          // ];
+          // Get.find<TasksController>().tasksDesc = [
+          //   [""]
+          // ];
+          // Get.find<TasksController>().tasksTimesStart = [
+          //   [""]
+          // ];
+          // Get.find<TasksController>().tasksTimesEnd = [
+          //   [""]
+          // ];
           Get.find<TasksController>().milestonesMap.clear();
           Get.find<TasksController>().tasksProgress.clear();
           Get.find<TasksController>().cardsRow.clear();
           Get.find<TasksController>().cardsRow.value =
               await Get.find<TasksController>().setCards();
-          // Get.find<TasksController>().cardsRow.add(Column(
-          //       children: [
-          //         SizedBox(
-          //           height: 30,
-          //         ),
-          //         CustText(text: "No Active projects", fontSize: 20),
-          //       ],
-          //     ));
-          Get.find<SignInUp>().inputTasksWhenEmpty();
+
+          // Get.find<SignInUp>().inputTasksWhenEmpty();
+          Get.find<TasksController>().updateTasks();
           Get.find<TasksController>().tasksKeys =
               Get.find<TasksController>().tasks.keys.toList();
+          Get.find<TasksController>().stringTasksKeys = [""];
+          log("STRIGN ${Get.find<TasksController>().stringTasksKeys}");
           Get.back();
         }
         //
@@ -501,58 +505,61 @@ class TasksController extends GetxController {
     int trueCount = 0;
     int totalMilestones = 0;
     //
-    if (Get.find<TasksController>()
-                .tasks[Get.find<TasksController>().tasksKeys[0].toString()]
-            ["Milestones"] !=
-        null) {
+    if (Get.find<TasksController>().tasks.isNotEmpty) {
       for (int i = 0;
           i < Get.find<TasksController>().stringTasksKeys.length;
           i++) {
-        for (int j = 0;
-            j <
-                Get.find<TasksController>()
-                    .milestonesMap[
-                        Get.find<TasksController>().stringTasksKeys[i]]
-                    .length;
-            j++) {
-          for (int k = 0;
-              k <
+        if (Get.find<TasksController>()
+                    .tasks[Get.find<TasksController>().tasksKeys[i].toString()]
+                ["Milestones"] !=
+            null) {
+          for (int j = 0;
+              j <
                   Get.find<TasksController>()
-                      .tasks[Get.find<TasksController>().stringTasksKeys[i]]
-                          ["Tasks Titles"]
+                      .milestonesMap[
+                          Get.find<TasksController>().stringTasksKeys[i]]
                       .length;
-              k++) {
-            totalMilestones = totalMilestones +
-                int.parse(Get.find<TasksController>()
-                    .tasksProgress[Get.find<TasksController>()
-                        .stringTasksKeys[i]][Get.find<TasksController>().tasks[
-                            Get.find<TasksController>().stringTasksKeys[i]]
-                        ["Tasks Titles"][k]]
-                    .length
-                    .toString());
-            for (int z = 0;
-                z <
+              j++) {
+            for (int k = 0;
+                k <
                     Get.find<TasksController>()
-                        .tasksProgress[
-                            Get.find<TasksController>().stringTasksKeys[i]][
-                            Get.find<TasksController>().tasks[
-                                Get.find<TasksController>()
-                                    .stringTasksKeys[i]]["Tasks Titles"][k]]
+                        .tasks[Get.find<TasksController>().stringTasksKeys[i]]
+                            ["Tasks Titles"]
                         .length;
-                z++) {
-              //
-              if (Get.find<TasksController>().tasksProgress[
+                k++) {
+              totalMilestones = totalMilestones +
+                  int.parse(Get.find<TasksController>()
+                      .tasksProgress[
                           Get.find<TasksController>().stringTasksKeys[i]][
-                      Get.find<TasksController>().tasks[
-                              Get.find<TasksController>().stringTasksKeys[i]]
-                          ["Tasks Titles"][k]][z] ==
-                  true) {
-                trueCount = trueCount + 1;
+                          Get.find<TasksController>().tasks[
+                              Get.find<TasksController>()
+                                  .stringTasksKeys[i]]["Tasks Titles"][k]]
+                      .length
+                      .toString());
+              for (int z = 0;
+                  z <
+                      Get.find<TasksController>()
+                          .tasksProgress[
+                              Get.find<TasksController>().stringTasksKeys[i]][
+                              Get.find<TasksController>().tasks[
+                                  Get.find<TasksController>()
+                                      .stringTasksKeys[i]]["Tasks Titles"][k]]
+                          .length;
+                  z++) {
+                //
+                if (Get.find<TasksController>().tasksProgress[
+                            Get.find<TasksController>().stringTasksKeys[i]][
+                        Get.find<TasksController>().tasks[
+                                Get.find<TasksController>().stringTasksKeys[i]]
+                            ["Tasks Titles"][k]][z] ==
+                    true) {
+                  trueCount = trueCount + 1;
+                }
               }
             }
           }
+          percent = trueCount / totalMilestones;
         }
-        percent = trueCount / totalMilestones;
       }
     } else {
       percent = 0.001;
@@ -566,6 +573,10 @@ class TasksController extends GetxController {
     final User? user = auth.currentUser;
     Map<dynamic, dynamic> tempMilestone = {};
     Map<dynamic, dynamic> tempProgressBool = {};
+    Get.find<TasksController>().tasks = {};
+    Get.find<TasksController>().tasksProgress.clear();
+    Get.find<TasksController>().milestonesMap = {};
+
     Get.find<TasksController>().tasksTitle = [
       [""]
     ];
@@ -588,177 +599,190 @@ class TasksController extends GetxController {
           Map<String, dynamic>? data = value.data();
           Get.find<TasksController>().tasks = data?['Tasks'];
         }
-        Get.find<TasksController>().tasksKeys =
-            Get.find<TasksController>().tasks.keys.toList();
-        if (Get.find<TasksController>()
-                    .tasks[Get.find<TasksController>().tasksKeys[0].toString()]
-                ["Milestones"] !=
-            null) {
-          for (int i = 0;
-              i < Get.find<TasksController>().tasksKeys.length - 1;
-              i++) {
-            Get.find<TasksController>().tasksTitle.add([""]);
-            Get.find<TasksController>().tasksDesc.add([""]);
-            Get.find<TasksController>().tasksTimesStart.add([""]);
-            Get.find<TasksController>().tasksTimesEnd.add([""]);
-            // Get.find<TasksController>().milestonesMap.add([""]);
-          }
-          for (int i = 0;
-              i < Get.find<TasksController>().tasksKeys.length;
-              i++) {
-            //
-            //
-            if (Get.find<TasksController>().stringTasksKeys[0] == "") {
-              Get.find<TasksController>().stringTasksKeys[0] =
-                  Get.find<TasksController>().tasksKeys[i].toString();
-            } else {
-              Get.find<TasksController>()
-                  .stringTasksKeys
-                  .add(Get.find<TasksController>().tasksKeys[i].toString());
+        if (Get.find<TasksController>().tasks.isNotEmpty) {
+          Get.find<TasksController>().tasksKeys =
+              Get.find<TasksController>().tasks.keys.toList();
+          if (Get.find<TasksController>().tasks[Get.find<TasksController>()
+                  .tasksKeys[0]
+                  .toString()]["Milestones"] !=
+              null) {
+            for (int i = 0;
+                i < Get.find<TasksController>().tasksKeys.length - 1;
+                i++) {
+              Get.find<TasksController>().tasksTitle.add([""]);
+              Get.find<TasksController>().tasksDesc.add([""]);
+              Get.find<TasksController>().tasksTimesStart.add([""]);
+              Get.find<TasksController>().tasksTimesEnd.add([""]);
+              // Get.find<TasksController>().milestonesMap.add([""]);
             }
-            //
-            var a = Get.find<TasksController>()
-                    .tasks[Get.find<TasksController>().stringTasksKeys[i]]
-                ["Tasks Titles"];
-
-            for (int j = 0;
-                j <
-                    Get.find<TasksController>()
-                        .tasks[Get.find<TasksController>().stringTasksKeys[i]]
-                            ["Tasks Titles"]
-                        .length;
-                j++) {
-              if (Get.find<TasksController>().tasksTitle[i][0] == "") {
-                Get.find<TasksController>().tasksTitle[i][j] = Get.find<
-                        TasksController>()
-                    .tasks[Get.find<TasksController>().tasksKeys[i].toString()]
-                        ["Tasks Titles"][j]
-                    .toString();
+            for (int i = 0;
+                i < Get.find<TasksController>().tasksKeys.length;
+                i++) {
+              //
+              //
+              if (Get.find<TasksController>().stringTasksKeys[0] == "") {
+                Get.find<TasksController>().stringTasksKeys[0] =
+                    Get.find<TasksController>().tasksKeys[i].toString();
               } else {
-                Get.find<TasksController>().tasksTitle[i].add(
-                    Get.find<TasksController>().tasks[
-                            Get.find<TasksController>().tasksKeys[i].toString()]
-                        ["Tasks Titles"][j]);
+                Get.find<TasksController>()
+                    .stringTasksKeys
+                    .add(Get.find<TasksController>().tasksKeys[i].toString());
               }
+              //
+              var a = Get.find<TasksController>()
+                      .tasks[Get.find<TasksController>().stringTasksKeys[i]]
+                  ["Tasks Titles"];
 
-              if (Get.find<TasksController>().tasksDesc[i][0] == "") {
-                Get.find<TasksController>().tasksDesc[i][0] = Get.find<
-                        TasksController>()
-                    .tasks[Get.find<TasksController>().tasksKeys[i].toString()]
-                        ["Tasks Description"][j]
-                    .toString();
-              } else {
-                Get.find<TasksController>().tasksDesc[i].add(
-                    Get.find<TasksController>().tasks[
-                            Get.find<TasksController>().tasksKeys[i].toString()]
-                        ["Tasks Description"][j]);
-              }
-
-              if (Get.find<TasksController>().tasksTimesStart[i][0] == "") {
-                Get.find<TasksController>().tasksTimesStart[i][0] = Get.find<
-                        TasksController>()
-                    .tasks[Get.find<TasksController>().tasksKeys[i].toString()]
-                        ["Tasks Start Times"][j]
-                    .toString();
-              } else {
-                Get.find<TasksController>().tasksTimesStart[i].add(
-                    Get.find<TasksController>().tasks[
-                            Get.find<TasksController>().tasksKeys[i].toString()]
-                        ["Tasks Start Times"][j]);
-              }
-
-              if (Get.find<TasksController>().tasksTimesEnd[i][0] == "") {
-                Get.find<TasksController>().tasksTimesEnd[i][0] = Get.find<
-                        TasksController>()
-                    .tasks[Get.find<TasksController>().tasksKeys[i].toString()]
-                        ["Tasks End Times"][j]
-                    .toString();
-              } else {
-                Get.find<TasksController>().tasksTimesEnd[i].add(
-                    Get.find<TasksController>().tasks[
-                            Get.find<TasksController>().tasksKeys[i].toString()]
-                        ["Tasks End Times"][j]);
-              }
-              List<String> milestonesRetrieved = [];
-
-              if (Get.find<TasksController>().tasks[Get.find<TasksController>()
-                      .tasksKeys[i]
-                      .toString()]["Milestones"] !=
-                  null) {
-                for (int k = 0;
-                    k <
-                        Get.find<TasksController>()
-                            .tasks[Get.find<TasksController>()
-                                    .tasksKeys[i]
-                                    .toString()]["Milestones"][
-                                Get.find<TasksController>()
-                                    .tasks[Get.find<TasksController>()
-                                        .tasksKeys[i]
-                                        .toString()]["Tasks Titles"][j]
-                                    .toString()]
-                            .length;
-                    k++) {
-                  milestonesRetrieved.add(Get.find<TasksController>().tasks[
+              for (int j = 0;
+                  j <
                       Get.find<TasksController>()
-                          .tasksKeys[i]
-                          .toString()]["Milestones"][Get.find<TasksController>()
-                      .tasks[Get.find<TasksController>()
-                          .tasksKeys[i]
-                          .toString()]["Tasks Titles"][j]
-                      .toString()][k]);
-                }
-                //
-                tempMilestone[Get.find<TasksController>()
-                    .tasks[Get.find<TasksController>().tasksKeys[i].toString()]
-                        ["Tasks Titles"][j]
-                    .toString()] = milestonesRetrieved;
-                //
-                Get.find<TasksController>().milestonesMap[
-                        Get.find<TasksController>().stringTasksKeys[i]] =
-                    tempMilestone;
-              }
-              List<bool> progressBoolRet = [];
-
-              if (Get.find<TasksController>().tasks[Get.find<TasksController>()
-                      .tasksKeys[i]
-                      .toString()]["tasks progress"] !=
-                  null) {
-                for (int k = 0;
-                    k <
-                        Get.find<TasksController>()
-                            .tasks[Get.find<TasksController>()
-                                    .tasksKeys[i]
-                                    .toString()]["tasks progress"][
-                                Get.find<TasksController>()
-                                    .tasks[Get.find<TasksController>()
-                                        .tasksKeys[i]
-                                        .toString()]["Tasks Titles"][j]
-                                    .toString()]
-                            .length;
-                    k++) {
-                  progressBoolRet.add(Get.find<TasksController>().tasks[
-                          Get.find<TasksController>()
-                              .tasksKeys[i]
-                              .toString()]["tasks progress"][
+                          .tasks[Get.find<TasksController>().stringTasksKeys[i]]
+                              ["Tasks Titles"]
+                          .length;
+                  j++) {
+                if (Get.find<TasksController>().tasksTitle[i][0] == "") {
+                  Get.find<TasksController>().tasksTitle[i][j] =
                       Get.find<TasksController>()
                           .tasks[Get.find<TasksController>()
                               .tasksKeys[i]
                               .toString()]["Tasks Titles"][j]
-                          .toString()][k]);
+                          .toString();
+                } else {
+                  Get.find<TasksController>().tasksTitle[i].add(
+                      Get.find<TasksController>().tasks[
+                          Get.find<TasksController>()
+                              .tasksKeys[i]
+                              .toString()]["Tasks Titles"][j]);
                 }
 
-                tempProgressBool[Get.find<TasksController>()
-                    .tasks[Get.find<TasksController>().tasksKeys[i].toString()]
-                        ["Tasks Titles"][j]
-                    .toString()] = progressBoolRet;
-                //
-                Get.find<TasksController>().tasksProgress[
-                        Get.find<TasksController>().stringTasksKeys[i]] =
-                    tempProgressBool;
+                if (Get.find<TasksController>().tasksDesc[i][0] == "") {
+                  Get.find<TasksController>().tasksDesc[i][0] =
+                      Get.find<TasksController>()
+                          .tasks[Get.find<TasksController>()
+                              .tasksKeys[i]
+                              .toString()]["Tasks Description"][j]
+                          .toString();
+                } else {
+                  Get.find<TasksController>().tasksDesc[i].add(
+                      Get.find<TasksController>().tasks[
+                          Get.find<TasksController>()
+                              .tasksKeys[i]
+                              .toString()]["Tasks Description"][j]);
+                }
+
+                if (Get.find<TasksController>().tasksTimesStart[i][0] == "") {
+                  Get.find<TasksController>().tasksTimesStart[i][0] =
+                      Get.find<TasksController>()
+                          .tasks[Get.find<TasksController>()
+                              .tasksKeys[i]
+                              .toString()]["Tasks Start Times"][j]
+                          .toString();
+                } else {
+                  Get.find<TasksController>().tasksTimesStart[i].add(
+                      Get.find<TasksController>().tasks[
+                          Get.find<TasksController>()
+                              .tasksKeys[i]
+                              .toString()]["Tasks Start Times"][j]);
+                }
+
+                if (Get.find<TasksController>().tasksTimesEnd[i][0] == "") {
+                  Get.find<TasksController>().tasksTimesEnd[i][0] =
+                      Get.find<TasksController>()
+                          .tasks[Get.find<TasksController>()
+                              .tasksKeys[i]
+                              .toString()]["Tasks End Times"][j]
+                          .toString();
+                } else {
+                  Get.find<TasksController>().tasksTimesEnd[i].add(
+                      Get.find<TasksController>().tasks[
+                          Get.find<TasksController>()
+                              .tasksKeys[i]
+                              .toString()]["Tasks End Times"][j]);
+                }
+                List<String> milestonesRetrieved = [];
+
+                if (Get.find<TasksController>().tasks[
+                            Get.find<TasksController>().tasksKeys[i].toString()]
+                        ["Milestones"] !=
+                    null) {
+                  for (int k = 0;
+                      k <
+                          Get.find<TasksController>()
+                              .tasks[Get.find<TasksController>()
+                                      .tasksKeys[i]
+                                      .toString()]["Milestones"][
+                                  Get.find<TasksController>()
+                                      .tasks[Get.find<TasksController>()
+                                          .tasksKeys[i]
+                                          .toString()]["Tasks Titles"][j]
+                                      .toString()]
+                              .length;
+                      k++) {
+                    milestonesRetrieved.add(Get.find<TasksController>().tasks[
+                            Get.find<TasksController>()
+                                .tasksKeys[i]
+                                .toString()]["Milestones"][
+                        Get.find<TasksController>()
+                            .tasks[Get.find<TasksController>()
+                                .tasksKeys[i]
+                                .toString()]["Tasks Titles"][j]
+                            .toString()][k]);
+                  }
+                  //
+                  tempMilestone[Get.find<TasksController>()
+                      .tasks[Get.find<TasksController>()
+                          .tasksKeys[i]
+                          .toString()]["Tasks Titles"][j]
+                      .toString()] = milestonesRetrieved;
+                  //
+                  Get.find<TasksController>().milestonesMap[
+                          Get.find<TasksController>().stringTasksKeys[i]] =
+                      tempMilestone;
+                }
+                List<bool> progressBoolRet = [];
+
+                if (Get.find<TasksController>().tasks[
+                            Get.find<TasksController>().tasksKeys[i].toString()]
+                        ["tasks progress"] !=
+                    null) {
+                  for (int k = 0;
+                      k <
+                          Get.find<TasksController>()
+                              .tasks[Get.find<TasksController>()
+                                      .tasksKeys[i]
+                                      .toString()]["tasks progress"][
+                                  Get.find<TasksController>()
+                                      .tasks[Get.find<TasksController>()
+                                          .tasksKeys[i]
+                                          .toString()]["Tasks Titles"][j]
+                                      .toString()]
+                              .length;
+                      k++) {
+                    progressBoolRet.add(Get.find<TasksController>().tasks[
+                            Get.find<TasksController>()
+                                .tasksKeys[i]
+                                .toString()]["tasks progress"][
+                        Get.find<TasksController>()
+                            .tasks[Get.find<TasksController>()
+                                .tasksKeys[i]
+                                .toString()]["Tasks Titles"][j]
+                            .toString()][k]);
+                  }
+
+                  tempProgressBool[Get.find<TasksController>()
+                      .tasks[Get.find<TasksController>()
+                          .tasksKeys[i]
+                          .toString()]["Tasks Titles"][j]
+                      .toString()] = progressBoolRet;
+                  //
+                  Get.find<TasksController>().tasksProgress[
+                          Get.find<TasksController>().stringTasksKeys[i]] =
+                      tempProgressBool;
+                }
               }
+              tempMilestone = {};
+              tempProgressBool = {};
             }
-            tempMilestone = {};
-            tempProgressBool = {};
           }
         }
         log("Title ${Get.find<TasksController>().tasksTitle}");
@@ -783,36 +807,40 @@ class TasksController extends GetxController {
   List<Widget> setAllDayHours(String date) {
     hoursAndTimeList = <Widget>[].obs;
     int tasksLen = 0;
-    if (Get.find<TasksController>()
-                .tasks[Get.find<TasksController>().tasksKeys[0].toString()]
-            ["Milestones"] !=
-        null) {
-      if (Get.find<TasksController>().stringTasksKeys.contains(date)) {
-        int count = 0;
-        tasksLen =
-            Get.find<TasksController>().tasks[date]["Tasks Titles"].length;
+    if (Get.find<TasksController>().tasks.isNotEmpty) {
+      if (Get.find<TasksController>()
+                  .tasks[Get.find<TasksController>().tasksKeys[0].toString()]
+              ["Milestones"] !=
+          null) {
+        if (Get.find<TasksController>().stringTasksKeys.contains(date)) {
+          int count = 0;
+          tasksLen =
+              Get.find<TasksController>().tasks[date]["Tasks Titles"].length;
 
-        int indexOfDay =
-            Get.find<TasksController>().stringTasksKeys.indexOf(date);
-        if (tasksLen > 0) {
-          for (int i = 0;
-              i < Get.find<TasksController>().tasksTitle[indexOfDay].length;
-              i++) {
-            if (count > 2) {
-              count = 0;
+          int indexOfDay =
+              Get.find<TasksController>().stringTasksKeys.indexOf(date);
+          if (tasksLen > 0) {
+            for (int i = 0;
+                i < Get.find<TasksController>().tasksTitle[indexOfDay].length;
+                i++) {
+              if (count > 2) {
+                count = 0;
+              }
+              hoursAndTimeList.add(DayHours(
+                hour: Get.find<TasksController>().tasksTimesStart[indexOfDay]
+                    [i],
+                endHour: Get.find<TasksController>().tasksTimesEnd[indexOfDay]
+                    [i],
+                color: Get.find<TasksController>().tasksColors[count],
+                title: Get.find<TasksController>().tasksTitle[indexOfDay][i],
+                desc: Get.find<TasksController>().tasksDesc[indexOfDay][i],
+              ));
+              count = count + 1;
             }
-            hoursAndTimeList.add(DayHours(
-              hour: Get.find<TasksController>().tasksTimesStart[indexOfDay][i],
-              endHour: Get.find<TasksController>().tasksTimesEnd[indexOfDay][i],
-              color: Get.find<TasksController>().tasksColors[count],
-              title: Get.find<TasksController>().tasksTitle[indexOfDay][i],
-              desc: Get.find<TasksController>().tasksDesc[indexOfDay][i],
-            ));
-            count = count + 1;
           }
+        } else {
+          tasksLen = 0;
         }
-      } else {
-        tasksLen = 0;
       }
     } else {
       return [Center(child: CustText(text: "No Pending Tasks", fontSize: 20))];
