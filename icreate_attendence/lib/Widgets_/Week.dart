@@ -20,15 +20,7 @@ class _WeekState extends State<Week> {
 
   void setDayAndMonthDay() {
     var time = DateTime.now();
-    Map days = {
-      'Sunday': 'Sun',
-      'Monday': 'Mon',
-      'Tuesday': 'Tue',
-      'Wednesday': 'Wed',
-      'Thursday': 'Thu',
-      'Friday': 'Fri',
-      'Saturday': 'Sat'
-    };
+
     List<String> d = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     List<String> d2 = [
       'Sunday',
@@ -39,16 +31,6 @@ class _WeekState extends State<Week> {
       'Friday',
       'Saturday'
     ];
-
-    // Map daysN = {
-    //   'Sunday': 0,
-    //   'Monday': 1,
-    //   'Tuesday': 2,
-    //   'Wednesday': 3,
-    //   'Thursday': 4,
-    //   'Friday': 5,
-    //   'Saturday': 6,
-    // };
 
     var day = DateFormat('EEEE').format(time);
 
@@ -72,7 +54,7 @@ class _WeekState extends State<Week> {
     var screenSize = MediaQuery.of(context).size;
     return SizedBox(
       height: screenSize.height / 19,
-      width: screenSize.width / 1.1,
+      width: screenSize.width / 1.05,
       child: Row(
         children: daysAndNumber
         // GestureDetector(

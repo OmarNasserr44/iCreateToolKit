@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   SignInUp signInUp = Get.find<SignInUp>();
-  PushNotification pushNotification = Get.find<PushNotification>();
+  // PushNotification pushNotification = Get.find<PushNotification>();
 
   TasksController tasksController = Get.find<TasksController>();
 
@@ -43,16 +43,16 @@ class _HomePageState extends State<HomePage> {
       Get.find<TasksController>().cardsRow.refresh();
     }();
     // tasksController.setPercent();
-    if (signInUp.adminAcc) {
-      pushNotification.getFCM().getToken().then((token) {
-        FirebaseFirestore.instance
-            .collection('tokens')
-            .doc(Get.find<FirebaseRequests>().userDoc)
-            .set({
-          'token': token,
-        });
-      });
-    }
+    // if (signInUp.adminAcc) {
+    //   pushNotification.getFCM().getToken().then((token) {
+    //     FirebaseFirestore.instance
+    //         .collection('tokens')
+    //         .doc(Get.find<FirebaseRequests>().userDoc)
+    //         .set({
+    //       'token': token,
+    //     });
+    //   });
+    // }
     tasksController.incInProgress();
     tasksController.incToDo();
     super.initState();

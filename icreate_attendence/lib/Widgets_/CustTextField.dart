@@ -86,7 +86,7 @@ class _CustTextFieldState extends State<CustTextField> {
                         borderSide: BorderSide(color: Colors.grey)),
                     label: CustText(
                       text: widget.label,
-                      fontSize: screenSize.width / 15,
+                      fontSize: screenSize.width / 17,
                       bold: false,
                       color: Colors.grey,
                     ),

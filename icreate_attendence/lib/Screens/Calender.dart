@@ -22,7 +22,9 @@ class Calender extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(height: screenSize.height / 30),
-              CalenderTitle(tasksController: tasksController),
+              SizedBox(
+                  height: screenSize.height / 10,
+                  child: CalenderTitle(tasksController: tasksController)),
               SizedBox(height: screenSize.height / 30),
               SizedBox(
                   width: screenSize.width / 1.1,
@@ -33,10 +35,10 @@ class Calender extends StatelessWidget {
               SizedBox(height: screenSize.height / 40),
               SizedBox(height: screenSize.height / 20, child: Week()),
               SizedBox(
-                height: screenSize.height / 80,
+                height: screenSize.height / 60,
               ),
               SizedBox(
-                height: screenSize.height / 1.6,
+                height: screenSize.height / 1.8,
                 width: screenSize.width / 1.1,
                 // color: Colors.red,
                 child: ListView(

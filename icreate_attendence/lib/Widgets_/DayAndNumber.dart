@@ -32,7 +32,7 @@ class DayAndNumber extends StatelessWidget {
           ),
           CustText(
             text: monthDay,
-            fontSize: screenSize.width / 23,
+            fontSize: screenSize.width / 35,
             bold: false,
             color: monthDayColor,
           ),

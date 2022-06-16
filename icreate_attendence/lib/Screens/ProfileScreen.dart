@@ -49,13 +49,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 SizedBox(
                   height: screenSize.height / 25,
                 ),
-                // NavArrowAndSearchIcons(
-                //   onTap: () {
-                //     _scaffoldKey.currentState?.openDrawer();
-                //   },
-                // ),
                 SizedBox(
-                  height: screenSize.height / 7,
+                  height: screenSize.height / 6,
                   width: screenSize.width / 1.2,
                   child: Row(
                     children: [

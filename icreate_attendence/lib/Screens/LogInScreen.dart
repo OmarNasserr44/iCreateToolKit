@@ -105,7 +105,7 @@ class _LogInScreenState extends State<LogInScreen> {
                   ),
                   SizedBox(
                     width: screenSize.width / 1.1,
-                    height: screenSize.height / 18,
+                    height: screenSize.height / 16,
                     child: CustText(
                         text: "Sign In", fontSize: screenSize.width / 8),
                   ),
@@ -210,6 +210,7 @@ class _LogInScreenState extends State<LogInScreen> {
                               String emailTemp = signInUp.email;
                               String passTemp = signInUp.password;
                               await firebaseRequests.currentUserData();
+                              await firebaseRequests.getDoneTasks();
                               await Get.find<TasksController>().getUserTasks();
                               if (signInUp.adminAcc) {
                                 Get.find<AdminController>().getAdminTasks();
@@ -221,6 +222,7 @@ class _LogInScreenState extends State<LogInScreen> {
                                   await SharedPreferences.getInstance();
                               prefs.setString('email', emailTemp);
                               prefs.setString('password', passTemp);
+
                               log("preff ${prefs.get('password')}");
                               log("TASKS ${Get.find<TasksController>().tasks}");
                               Navigator.pop(context);

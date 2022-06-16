@@ -10,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:icreate_attendence/GetX%20Controllers/updateCheck.dart';
 
 import '../GetX Controllers/TasksController.dart';
+import '../GetX Controllers/shared_preferences.dart';
 
 class SignInUp extends GetxController {
   List<bool> validationError = [
@@ -87,6 +88,7 @@ class SignInUp extends GetxController {
 
   Future<void> inputData() async {
     final User? user = auth.currentUser;
+
     try {
       await firestore.collection("User Information").doc(user?.uid).set({
         "Name": Get.find<SignInUp>().name,
@@ -95,7 +97,7 @@ class SignInUp extends GetxController {
         "Phone Number": Get.find<SignInUp>().phoneNo,
         "Password": Get.find<SignInUp>().password,
         "ID": Get.find<SignInUp>().id,
-        "admin": "not admin"
+        "admin": "not admin",
       });
     } on Exception catch (e) {
       log('ERROR IN INPUT DATA $e');
@@ -139,6 +141,13 @@ class SignInUp extends GetxController {
       await firestore.collection("Adherence").doc(user?.uid).set({
         "days": updateCheck.days,
         "current status": updateCheck.currentStatus,
+      }).then((value) => log("Adherence was created successfully"));
+    } on Exception catch (e) {
+      log('ERROR IN INPUT DATA $e');
+    }
+    try {
+      await firestore.collection("Done Tasks").doc(user?.uid).set({
+        "done tasks": Get.find<SharedPreferencesController>().dateTasksDone,
       }).then((value) => log("Adherence was created successfully"));
     } on Exception catch (e) {
       log('ERROR IN INPUT DATA $e');

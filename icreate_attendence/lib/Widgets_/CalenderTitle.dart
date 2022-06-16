@@ -22,9 +22,12 @@ class CalenderTitle extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustText(text: "Today", fontSize: screenSize.width / 10),
-            Text(
-              "${tasksController.productivity}, ${Get.find<SignInUp>().name}",
-              style: TextStyle(color: Colors.grey),
+            SizedBox(
+              height: screenSize.height / 27,
+              child: Text(
+                "${tasksController.productivity}, ${Get.find<SignInUp>().name}",
+                style: TextStyle(color: Colors.grey),
+              ),
             ),
           ],
         ));

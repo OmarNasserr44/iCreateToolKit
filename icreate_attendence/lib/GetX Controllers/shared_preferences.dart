@@ -18,6 +18,7 @@ class SharedPreferencesController extends GetxController {
   //
   String sharedEmail = "".obs();
   String sharedPassword = "".obs();
+  Map<dynamic, dynamic> dateTasksDone = {}.obs();
 
   //
   bool hasInternet = false.obs();
@@ -39,6 +40,11 @@ class SharedPreferencesController extends GetxController {
     }
   }
 
+  Future<void> getToDo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Get.find<TasksController>().toDo;
+  }
+
   //
   RxBool splashLogin = false.obs;
   Future<void> checkLogIn() async {
@@ -50,6 +56,19 @@ class SharedPreferencesController extends GetxController {
           prefs.getString('email') ?? "";
       Get.find<SharedPreferencesController>().sharedPassword =
           prefs.getString('password') ?? "";
+      //
+      // String dbMonth = prefs.getString('month') ?? "";
+      // String doneName = '${Get.find<SignInUp>().name}Done';
+      // if (dbMonth == Get.find<TasksController>().month.toString()) {
+      //   Get.find<TasksController>().doneTasks.value =
+      //       prefs.getInt(doneName) ?? 0;
+      //   log("done ${Get.find<TasksController>().doneTasks}");
+      // } else {
+      //   prefs.setString('month', Get.find<TasksController>().month.toString());
+      //   prefs.setInt(doneName, 0);
+      //   Get.find<TasksController>().doneTasks.value =
+      //       prefs.getInt(doneName) ?? 0;
+      // }
       //
       log("EMAIL ${Get.find<SharedPreferencesController>().sharedEmail}");
       log("Pass ${Get.find<SharedPreferencesController>().sharedPassword}");
@@ -75,6 +94,7 @@ class SharedPreferencesController extends GetxController {
           Get.find<SharedPreferencesController>().splashLogin.refresh();
           log("UserC not null");
           await Get.find<FirebaseRequests>().currentUserData();
+          await Get.find<FirebaseRequests>().getDoneTasks();
           await Get.find<TasksController>().getUserTasks();
           if (Get.find<SignInUp>().adminAcc) {
             Get.find<AdminController>().getAdminTasks();

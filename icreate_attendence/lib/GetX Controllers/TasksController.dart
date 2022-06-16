@@ -6,6 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icreate_attendence/GetX%20Controllers/shared_preferences.dart';
+import 'package:icreate_attendence/Requests/FirebaseRequests.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Colors/Colors.dart';
 import '../Requests/SignInUpFirebase.dart';
@@ -20,7 +23,7 @@ class TasksController extends GetxController {
   RxInt toDo = 0.obs;
   RxInt inProgress = 0.obs;
   RxInt doneTasks = 0.obs;
-  String productivity = "Productive Day".obs();
+  String productivity = "Wish you a productive day".obs();
   String trackTitle = "".obs();
   String trackDesc = "".obs();
   String trackDate = DateTime.now().toString().substring(0, 10).obs().obs();
@@ -75,9 +78,14 @@ class TasksController extends GetxController {
     }
   }
 
-  void incDone() {
-    Get.find<TasksController>().doneTasks++;
+  void incDone() async {
+    Get.find<TasksController>().doneTasks.value++;
     Get.find<TasksController>().doneTasks.refresh();
+
+    Get.find<SharedPreferencesController>()
+            .dateTasksDone[Get.find<TasksController>().month.toString()] =
+        Get.find<TasksController>().doneTasks.value;
+    await Get.find<FirebaseRequests>().updateDoneTasks();
   }
 
   //

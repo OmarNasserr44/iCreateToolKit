@@ -12,6 +12,7 @@ import 'package:icreate_attendence/Screens/NavMainBar.dart';
 import 'package:icreate_attendence/Widgets_/Button.dart';
 import 'package:icreate_attendence/Widgets_/CustText.dart';
 import 'package:icreate_attendence/Widgets_/CustTextField.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../GetX Controllers/AdminsController.dart';
 import '../GetX Controllers/NewTaskController.dart';
@@ -302,7 +303,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               Get.find<UpdateCheck>().days = {};
                               await signInUp.inputData();
                               await firebaseRequests.currentUserData();
+                              await firebaseRequests.getDoneTasks();
                               await Get.find<TasksController>().getUserTasks();
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              // String doneName = '${signInUp.name}Done';
+                              // prefs.setInt(doneName, 0);
+                              // prefs.setString('month',
+                              //     Get.find<TasksController>().month.toString());
                               if (Get.find<SignInUp>().adminAcc == true) {
                                 Get.find<AdminController>().getAdminTasks();
                                 Get.find<NewTaskController>().usersNames = [""];

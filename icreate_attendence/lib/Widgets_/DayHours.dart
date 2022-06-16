@@ -23,25 +23,31 @@ class DayHours extends StatelessWidget {
 
     return Row(
       children: [
-        Container(
+        SizedBox(
           width: screenSize.width / 12,
           height: screenSize.height / 8,
           child: Column(
             children: [
               Column(
                 children: [
-                  CustText(
-                    text: hour,
-                    fontSize: screenSize.width / 25,
-                    bold: false,
-                    color: Colors.grey,
+                  SizedBox(
+                    height: screenSize.height / 40,
+                    child: CustText(
+                      text: hour,
+                      fontSize: screenSize.width / 25,
+                      bold: false,
+                      color: Colors.grey,
+                    ),
                   ),
-                  SizedBox(height: screenSize.height / 12.5),
-                  CustText(
-                    text: endHour,
-                    fontSize: screenSize.width / 25,
-                    bold: false,
-                    color: Colors.grey,
+                  SizedBox(height: screenSize.height / 14),
+                  SizedBox(
+                    height: screenSize.height / 40,
+                    child: CustText(
+                      text: endHour,
+                      fontSize: screenSize.width / 25,
+                      bold: false,
+                      color: Colors.grey,
+                    ),
                   ),
                 ],
               ),

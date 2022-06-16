@@ -10,6 +10,8 @@ import 'package:icreate_attendence/GetX%20Controllers/TasksController.dart';
 import 'package:icreate_attendence/GetX%20Controllers/updateCheck.dart';
 import 'package:icreate_attendence/Requests/SignInUpFirebase.dart';
 
+import '../GetX Controllers/shared_preferences.dart';
+
 class FirebaseRequests extends GetxController {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -25,7 +27,7 @@ class FirebaseRequests extends GetxController {
           .collection("User Information")
           .doc(user?.uid)
           .get()
-          .then((value) {
+          .then((value) async {
         if (!value.exists) {
           log("something went Wrong");
         }
@@ -38,6 +40,7 @@ class FirebaseRequests extends GetxController {
           Get.find<SignInUp>().id = data?['ID'];
           Get.find<SignInUp>().title = data?['Title'];
           Get.find<SignInUp>().admin = data?['admin'];
+
           if (Get.find<SignInUp>().admin == "not admin") {
             Get.find<SignInUp>().adminAcc = false;
           } else if (Get.find<SignInUp>().admin == "admin") {
@@ -49,6 +52,51 @@ class FirebaseRequests extends GetxController {
       log("FAILED $e");
     }
     await Get.find<UpdateCheck>().getDaysAdherence();
+  }
+
+  Future<void> getDoneTasks() async {
+    final User? user = auth.currentUser;
+    try {
+      await firestore
+          .collection("Done Tasks")
+          .doc(user?.uid)
+          .get()
+          .then((value) async {
+        if (!value.exists) {
+          log("something went Wrong");
+        }
+        if (value.exists) {
+          Map<String, dynamic>? data = value.data();
+          Get.find<SharedPreferencesController>().dateTasksDone =
+              data?['done tasks'];
+          if (Get.find<SharedPreferencesController>().dateTasksDone.isEmpty) {
+            Get.find<SharedPreferencesController>().dateTasksDone[""] = "";
+          }
+          if (Get.find<SharedPreferencesController>()
+                  .dateTasksDone
+                  .keys
+                  .toList()[0]
+                  .toString() ==
+              Get.find<TasksController>().month.toString()) {
+            Get.find<TasksController>().doneTasks.value = int.parse(
+                Get.find<SharedPreferencesController>()
+                    .dateTasksDone[Get.find<TasksController>().month.toString()]
+                    .toString());
+            Get.find<TasksController>().doneTasks.refresh();
+          } else {
+            Get.find<SharedPreferencesController>().dateTasksDone = {};
+            Get.find<SharedPreferencesController>().dateTasksDone[
+                Get.find<TasksController>().month.toString()] = "0";
+            Get.find<TasksController>().doneTasks.value = int.parse(
+                Get.find<SharedPreferencesController>().dateTasksDone[
+                    Get.find<TasksController>().month.toString()]);
+            await Get.find<FirebaseRequests>().updateDoneTasks();
+          }
+        }
+      });
+    } on Exception catch (e) {
+      log("FAILED $e");
+    }
   }
 
   //
@@ -79,6 +127,17 @@ class FirebaseRequests extends GetxController {
       }).then((value) => log("Retrieved ID successfully"));
     } on Exception catch (e) {
       log('ERROR IN UPDATING ID $e');
+    }
+  }
+
+  Future<void> updateDoneTasks() async {
+    try {
+      final User? user = auth.currentUser;
+      await firestore.collection("Done Tasks").doc(user?.uid).update({
+        "done tasks": Get.find<SharedPreferencesController>().dateTasksDone,
+      }).then((value) => log("Updated dateTasksDone successfully"));
+    } on Exception catch (e) {
+      log('ERROR IN UPDATING dateTasksDone $e');
     }
   }
 

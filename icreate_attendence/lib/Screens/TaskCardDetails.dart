@@ -50,9 +50,24 @@ class TaskCardDetails extends StatelessWidget {
                   onChanged: (bool? value) {
                     tasksController.tasksProgress[date][title][i] = value;
                     tasksController.tasksProgress.refresh();
-                    Get.find<AdminController>()
-                            .adminTasks[Get.find<SignInUp>().name][date]
-                        ['tasks progress'][title][i] = value;
+                    if (Get.find<AdminController>().adminTasks.isNotEmpty) {
+                      if (Get.find<AdminController>()
+                          .adminTasks
+                          .containsKey(Get.find<SignInUp>().name)) {
+                        if (Get.find<AdminController>()
+                            .adminTasks[Get.find<SignInUp>().name]
+                            .containsKey(date)) {
+                          if (Get.find<AdminController>()
+                              .adminTasks[Get.find<SignInUp>().name][date]
+                                  ['tasks progress']
+                              .containsKey(title)) {
+                            Get.find<AdminController>()
+                                    .adminTasks[Get.find<SignInUp>().name][date]
+                                ['tasks progress'][title][i] = value;
+                          }
+                        }
+                      }
+                    }
                   },
                   value: Get.find<TasksController>().tasksProgress[date] == null
                       ? false
@@ -175,54 +190,72 @@ class TaskCardDetails extends StatelessWidget {
                         .taskDone(date, title, context, screenSize);
 
                     ///
-                    int index = Get.find<AdminController>()
-                        .adminTasks[Get.find<SignInUp>().name][date]
-                            ['Tasks Titles']
-                        .indexOf(title);
-                    Get.find<AdminController>()
-                        .adminTasks[Get.find<SignInUp>().name][date]
-                            ['Milestones']
-                        .remove(title);
-                    Get.find<AdminController>()
-                        .adminTasks[Get.find<SignInUp>().name][date]
-                            ['tasks progress']
-                        .remove(title);
-                    Get.find<AdminController>()
-                        .adminTasks[Get.find<SignInUp>().name][date]
-                            ['Tasks Description']
-                        .removeAt(index);
-                    Get.find<AdminController>()
-                        .adminTasks[Get.find<SignInUp>().name][date]
-                            ['Tasks Titles']
-                        .remove(title);
-                    Get.find<AdminController>()
-                        .adminTasks[Get.find<SignInUp>().name][date]
-                            ['Tasks Start Times']
-                        .removeAt(index);
-                    Get.find<AdminController>()
-                        .adminTasks[Get.find<SignInUp>().name][date]
-                            ['Tasks End Times']
-                        .removeAt(index);
-                    log("lenn ${Get.find<AdminController>().adminTasks[Get.find<SignInUp>().name][date]['Milestones']}");
-                    if (Get.find<AdminController>()
-                        .adminTasks[Get.find<SignInUp>().name][date]
-                            ['Milestones']
-                        .isEmpty) {
-                      log("IS EMPTY");
-                      Get.find<AdminController>()
-                          .adminTasks[Get.find<SignInUp>().name]
-                          .remove(date);
-                    }
-                    if (Get.find<AdminController>()
-                        .adminTasks[Get.find<SignInUp>().name]
-                        .isEmpty) {
-                      Get.find<AdminController>()
+                    ///
+                    if (Get.find<AdminController>().adminTasks.isNotEmpty) {
+                      if (Get.find<AdminController>()
                           .adminTasks
-                          .remove(Get.find<SignInUp>().name);
+                          .containsKey(Get.find<SignInUp>().name)) {
+                        if (Get.find<AdminController>()
+                            .adminTasks[Get.find<SignInUp>().name]
+                            .containsKey(date)) {
+                          if (Get.find<AdminController>()
+                              .adminTasks[Get.find<SignInUp>().name][date]
+                                  ['tasks progress']
+                              .containsKey(title)) {
+                            int index = Get.find<AdminController>()
+                                .adminTasks[Get.find<SignInUp>().name][date]
+                                    ['Tasks Titles']
+                                .indexOf(title);
+                            Get.find<AdminController>()
+                                .adminTasks[Get.find<SignInUp>().name][date]
+                                    ['Milestones']
+                                .remove(title);
+                            Get.find<AdminController>()
+                                .adminTasks[Get.find<SignInUp>().name][date]
+                                    ['tasks progress']
+                                .remove(title);
+                            Get.find<AdminController>()
+                                .adminTasks[Get.find<SignInUp>().name][date]
+                                    ['Tasks Description']
+                                .removeAt(index);
+                            Get.find<AdminController>()
+                                .adminTasks[Get.find<SignInUp>().name][date]
+                                    ['Tasks Titles']
+                                .remove(title);
+                            Get.find<AdminController>()
+                                .adminTasks[Get.find<SignInUp>().name][date]
+                                    ['Tasks Start Times']
+                                .removeAt(index);
+                            Get.find<AdminController>()
+                                .adminTasks[Get.find<SignInUp>().name][date]
+                                    ['Tasks End Times']
+                                .removeAt(index);
+                            log("lenn ${Get.find<AdminController>().adminTasks[Get.find<SignInUp>().name][date]['Milestones']}");
+                            if (Get.find<AdminController>()
+                                .adminTasks[Get.find<SignInUp>().name][date]
+                                    ['Milestones']
+                                .isEmpty) {
+                              log("IS EMPTY");
+                              Get.find<AdminController>()
+                                  .adminTasks[Get.find<SignInUp>().name]
+                                  .remove(date);
+                            }
+                            if (Get.find<AdminController>()
+                                .adminTasks[Get.find<SignInUp>().name]
+                                .isEmpty) {
+                              Get.find<AdminController>()
+                                  .adminTasks
+                                  .remove(Get.find<SignInUp>().name);
+                            }
+                            log("ADMIN TASKS ${Get.find<AdminController>().adminTasks}");
+                            Get.find<AdminController>().updateAdminCards();
+                            Get.find<AdminController>().updateAdminTasks();
+                          }
+                        }
+                      }
                     }
-                    log("ADMIN TASKS ${Get.find<AdminController>().adminTasks}");
-                    Get.find<AdminController>().updateAdminCards();
-                    Get.find<AdminController>().updateAdminTasks();
+
+                    ///
 
                     ///
                     if (Get.find<TasksController>().publishTaskToGsheets) {
