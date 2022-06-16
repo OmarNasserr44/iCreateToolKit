@@ -70,6 +70,8 @@ class _CustTextFieldState extends State<CustTextField> {
                   onChanged: widget.onChanged,
                 )
               : TextFormField(
+                  style: TextStyle(
+                      fontSize: screenSize.width / 25, color: mainTextColor),
                   maxLength: widget.maxLength,
                   obscureText: widget.pass,
                   keyboardType: widget.inputType,
@@ -79,14 +81,14 @@ class _CustTextFieldState extends State<CustTextField> {
                     hintText: widget.hint,
                     hintStyle: TextStyle(
                         color: Colors.grey[500],
-                        fontSize: screenSize.width / 25),
+                        fontSize: screenSize.width / 30),
                     enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: mainTextColor)),
                     focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey)),
                     label: CustText(
                       text: widget.label,
-                      fontSize: screenSize.width / 17,
+                      fontSize: screenSize.width / 19,
                       bold: false,
                       color: Colors.grey,
                     ),

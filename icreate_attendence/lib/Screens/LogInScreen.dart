@@ -105,7 +105,8 @@ class _LogInScreenState extends State<LogInScreen> {
                   ),
                   SizedBox(
                     width: screenSize.width / 1.1,
-                    height: screenSize.height / 16,
+                    height: screenSize.height / 13,
+                    // color: Colors.red,
                     child: CustText(
                         text: "Sign In", fontSize: screenSize.width / 8),
                   ),
