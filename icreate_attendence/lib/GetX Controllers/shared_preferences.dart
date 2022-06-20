@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icreate_attendence/GetX%20Controllers/DoneHistory.dart';
 import 'package:icreate_attendence/Widgets_/CustText.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -96,8 +97,10 @@ class SharedPreferencesController extends GetxController {
           await Get.find<FirebaseRequests>().currentUserData();
           await Get.find<FirebaseRequests>().getDoneTasks();
           await Get.find<TasksController>().getUserTasks();
-          if (Get.find<SignInUp>().adminAcc) {
-            Get.find<AdminController>().getAdminTasks();
+          await Get.find<AdminController>().getAdminTasks();
+          await Get.find<DoneTasksHistory>().getDoneHistory();
+
+          if (Get.find<SignInUp>().adminAcc.value) {
             Get.find<NewTaskController>().usersNames = [""];
             Get.find<NewTaskController>()
                 .getFieldDataQuery("User Information", "ID", "Name");

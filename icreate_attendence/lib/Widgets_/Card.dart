@@ -21,6 +21,7 @@ class CustCard extends StatelessWidget {
       required this.milestones,
       required this.date,
       this.admin = false,
+      this.fromDoneTasks = false,
       this.name = ""});
 
   final String mainText;
@@ -31,6 +32,7 @@ class CustCard extends StatelessWidget {
   final List<String> milestones;
   final String date;
   final bool admin;
+  final bool fromDoneTasks;
   final String name;
 
   @override
@@ -45,6 +47,7 @@ class CustCard extends StatelessWidget {
                   milestones: milestones,
                   title: mainText,
                   name: name,
+                  fromDoneTasks: fromDoneTasks,
                 ))
             : Get.to(() => TaskCardDetails(
                   desc: desc,

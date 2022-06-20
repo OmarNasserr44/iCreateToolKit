@@ -19,7 +19,13 @@ class Milestone extends StatelessWidget {
         SizedBox(
           width: screenSize.width / 20,
         ),
-        CustText(text: milestone, fontSize: screenSize.width / 15),
+        SizedBox(
+            width: screenSize.width / 1.5,
+            child: CustText(
+              text: milestone,
+              fontSize: screenSize.width / 17,
+              mileStone: true,
+            )),
         // SizedBox(),
         SizedBox(
           height: screenSize.height / 20,

@@ -21,29 +21,57 @@ import '../GetX Controllers/shared_preferences.dart';
 import '../Widgets_/Milestone.dart';
 import '../Widgets_/PickTimeBelowBanner.dart';
 
-class CreateNewTaskScreen extends StatelessWidget {
+class CreateNewTaskScreen extends StatefulWidget {
+  @override
+  State<CreateNewTaskScreen> createState() => _CreateNewTaskScreenState();
+}
+
+class _CreateNewTaskScreenState extends State<CreateNewTaskScreen> {
   TasksController tasksController = Get.find<TasksController>();
+
   SignInUp signInUp = Get.find<SignInUp>();
+
   NewTaskController newTaskController = Get.find<NewTaskController>();
 
   List<Widget> mileStones = [];
+
+  @override
+  void initState() {
+    //
+    // tasksController.trackTitle = "";
+    // tasksController.trackDate = "";
+    // tasksController.trackEnd = "";
+    // tasksController.trackStart = "";
+    // tasksController.trackMilestone = "";
+    // tasksController.trackDesc = "";
+    // mileStones = [];
+    super.initState();
+  }
+
   List<Widget> setMileStones(Size screenSize) {
     mileStones = [];
     for (int i = 0; i < tasksController.mileStonesString.length; i++) {
-      mileStones.add(Row(
+      mileStones.add(Column(
         children: [
-          Milestone(milestone: tasksController.mileStonesString[i]),
-          GestureDetector(
-            onTap: () {
-              mileStones.remove(mileStones[i]);
-              tasksController.mileStonesString
-                  .remove(tasksController.mileStonesString[i]);
-              tasksController.mileStonesString.refresh();
-            },
-            child: Icon(
-              Icons.delete,
-              color: Colors.red,
-            ),
+          Row(
+            children: [
+              Milestone(milestone: tasksController.mileStonesString[i]),
+              GestureDetector(
+                onTap: () {
+                  mileStones.remove(mileStones[i]);
+                  tasksController.mileStonesString
+                      .remove(tasksController.mileStonesString[i]);
+                  tasksController.mileStonesString.refresh();
+                },
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: screenSize.height / 100,
           ),
         ],
       ));
@@ -116,59 +144,62 @@ class CreateNewTaskScreen extends StatelessWidget {
                 SizedBox(
                   height: screenSize.height / 40,
                 ),
-                signInUp.adminAcc
-                    ? SizedBox(
-                        height: screenSize.height / 15,
-                        width: screenSize.width / 1.5,
-                        child: Obx(
-                          () => DropdownButton<String>(
-                            hint: Get.find<NewTaskController>()
-                                        .implementInUser
-                                        .value ==
-                                    ""
-                                ? CustText(
-                                    text: "Employees",
-                                    fontSize: screenSize.width / 15)
-                                : CustText(
-                                    text: Get.find<NewTaskController>()
-                                        .implementInUser
-                                        .value,
-                                    fontSize: screenSize.width / 15),
-                            items: Get.find<NewTaskController>()
-                                .usersNames
-                                .map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: CustText(
-                                  fontSize: screenSize.width / 15,
-                                  text: value,
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              Get.find<NewTaskController>()
-                                  .implementInUser
-                                  .value = value!;
-                              Get.find<NewTaskController>()
-                                  .implementInUser
-                                  .refresh();
-                              Get.find<NewTaskController>().selectedUserIndex =
-                                  Get.find<NewTaskController>()
-                                      .usersNames
-                                      .indexOf(Get.find<NewTaskController>()
-                                          .implementInUser
-                                          .value);
-                              Get.find<NewTaskController>().userDocument =
-                                  Get.find<NewTaskController>().usersList[
-                                      Get.find<NewTaskController>()
-                                          .selectedUserIndex];
-                            },
-                          ),
-                        ),
-                      )
-                    : Container(),
                 SizedBox(
-                  height: signInUp.adminAcc
+                  child: signInUp.adminAcc.value
+                      ? SizedBox(
+                          height: screenSize.height / 15,
+                          width: screenSize.width / 1.5,
+                          child: Obx(
+                            () => DropdownButton<String>(
+                              hint: Get.find<NewTaskController>()
+                                          .implementInUser
+                                          .value ==
+                                      ""
+                                  ? CustText(
+                                      text: "Employees",
+                                      fontSize: screenSize.width / 15)
+                                  : CustText(
+                                      text: Get.find<NewTaskController>()
+                                          .implementInUser
+                                          .value,
+                                      fontSize: screenSize.width / 15),
+                              items: Get.find<NewTaskController>()
+                                  .usersNames
+                                  .map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: CustText(
+                                    fontSize: screenSize.width / 15,
+                                    text: value,
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                Get.find<NewTaskController>()
+                                    .implementInUser
+                                    .value = value!;
+                                Get.find<NewTaskController>()
+                                    .implementInUser
+                                    .refresh();
+                                Get.find<NewTaskController>()
+                                        .selectedUserIndex =
+                                    Get.find<NewTaskController>()
+                                        .usersNames
+                                        .indexOf(Get.find<NewTaskController>()
+                                            .implementInUser
+                                            .value);
+                                Get.find<NewTaskController>().userDocument =
+                                    Get.find<NewTaskController>().usersList[
+                                        Get.find<NewTaskController>()
+                                            .selectedUserIndex];
+                              },
+                            ),
+                          ),
+                        )
+                      : Container(),
+                ),
+                SizedBox(
+                  height: signInUp.adminAcc.value
                       ? screenSize.height / 40
                       : screenSize.height / 30,
                 ),
@@ -184,6 +215,7 @@ class CreateNewTaskScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             CustTextField(
+                              maxLength: 60,
                               hint: 'Enter Milestone',
                               mileStone: true,
                               validator: '',
@@ -284,7 +316,7 @@ class CreateNewTaskScreen extends StatelessWidget {
                             tasksController.mileStonesString.isNotEmpty) {
                           //
                           signInUp.showAlertDialog(context);
-
+                          log("implement ${Get.find<NewTaskController>().implementInUser.value}");
                           if (Get.find<NewTaskController>()
                                   .implementInUser
                                   .value ==
@@ -302,6 +334,7 @@ class CreateNewTaskScreen extends StatelessWidget {
                             newTaskController.updateEmployeeData();
                             //
                             //function to update the selected employee in firebase
+                            log("userDoc ${newTaskController.userDocument}");
                             await newTaskController.updateEmployeeTasks(
                                 newTaskController.userDocument);
                             //

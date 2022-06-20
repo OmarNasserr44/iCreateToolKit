@@ -4,11 +4,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icreate_attendence/Colors/Colors.dart';
 import 'package:icreate_attendence/GetX%20Controllers/AdminsController.dart';
+import 'package:icreate_attendence/GetX%20Controllers/DoneHistory.dart';
 import 'package:icreate_attendence/GetX%20Controllers/Push_Notification.dart';
 import 'package:icreate_attendence/GetX%20Controllers/TasksController.dart';
 import 'package:icreate_attendence/Requests/SignInUpFirebase.dart';
 import 'package:icreate_attendence/Screens/AdminTasksScreen.dart';
+import '../GetX Controllers/NewTaskController.dart';
+import '../GetX Controllers/shared_preferences.dart';
 import '../Requests/FirebaseRequests.dart';
 import '../Widgets_/AdminRowCards.dart';
 import '../Widgets_/AvatarAndProgressPercent.dart';
@@ -58,12 +62,13 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
+  FirebaseRequests firebaseRequests = Get.find<FirebaseRequests>();
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
     return Scaffold(
       key: _scaffoldKey,
-      drawer: SideDrawer(),
       body: SafeArea(
         child: Column(
           children: [
@@ -124,27 +129,80 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               SizedBox(
-                                width: screenSize.width / 4,
+                                width: screenSize.width / 5,
+                                child: MaterialButton(
+                                  onPressed: () async {
+                                    await Get.find<
+                                            SharedPreferencesController>()
+                                        .checkInternet();
+                                    signInUp.showAlertDialog(context);
+                                    if (Get.find<SharedPreferencesController>()
+                                        .hasInternet) {
+                                      await firebaseRequests.currentUserData();
+                                      await firebaseRequests.getDoneTasks();
+                                      await Get.find<TasksController>()
+                                          .getUserTasks();
+                                      await Get.find<AdminController>()
+                                          .getAdminTasks();
+                                      await Get.find<DoneTasksHistory>()
+                                          .getDoneHistory();
+
+                                      if (signInUp.adminAcc.value) {
+                                        Get.find<NewTaskController>()
+                                            .usersNames = [""];
+                                        Get.find<NewTaskController>()
+                                            .getFieldDataQuery(
+                                                "User Information",
+                                                "ID",
+                                                "Name");
+                                      }
+                                      Get.find<TasksController>()
+                                              .cardsRow
+                                              .value =
+                                          await Get.find<TasksController>()
+                                              .setCards();
+                                      Get.find<TasksController>()
+                                          .cardsRow
+                                          .refresh();
+                                      tasksController.incInProgress();
+                                      tasksController.incToDo();
+                                    }
+                                    Navigator.pop(context);
+                                  },
+                                  color: Colors.grey[200],
+                                  child: Icon(
+                                    Icons.refresh,
+                                    size: screenSize.width / 13,
+                                    color: mainTextColor,
+                                  ),
+                                ),
                               ),
-                              signInUp.adminAcc
-                                  ? MaterialButton(
-                                      onPressed: () async {
-                                        ///////
-                                        Get.find<AdminController>()
-                                            .updateAdminCards();
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    AdminTasks()));
-                                      },
-                                      padding: EdgeInsets.zero,
-                                      color: Colors.grey[200],
-                                      minWidth: screenSize.width / 3.3,
-                                      child: CustText(
-                                          text: "Admin Tasks",
-                                          fontSize: screenSize.width / 14),
-                                    )
-                                  : Container(),
+                              SizedBox(
+                                width: screenSize.width / 20,
+                              ),
+                              Obx(
+                                () => SizedBox(
+                                  child: signInUp.adminAcc.value
+                                      ? MaterialButton(
+                                          onPressed: () {
+                                            ///////
+                                            Get.find<AdminController>()
+                                                .updateAdminCards();
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        AdminTasks()));
+                                          },
+                                          padding: EdgeInsets.zero,
+                                          color: Colors.grey[200],
+                                          minWidth: screenSize.width / 3.3,
+                                          child: CustText(
+                                              text: "Admin Tasks",
+                                              fontSize: screenSize.width / 14),
+                                        )
+                                      : Container(),
+                                ),
+                              )
                             ],
                           ),
                         ),

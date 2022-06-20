@@ -15,6 +15,8 @@ import '../Requests/SignInUpFirebase.dart';
 import '../Widgets_/CustText.dart';
 import '../Widgets_/DayHours.dart';
 import '../Widgets_/TwoCardsRow.dart';
+import 'AdminsController.dart';
+import 'NewTaskController.dart';
 
 class TasksController extends GetxController {
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -131,7 +133,6 @@ class TasksController extends GetxController {
     List<Widget> tempCards = [];
     List<String> texts = [];
     List<String> desc = [];
-    List<String> names = [];
     Map<String, String> date = {};
     Map<String, dynamic> percentage = {};
     List<List<String>> milestonesTemp = [];
@@ -156,9 +157,9 @@ class TasksController extends GetxController {
         //this will store milestone in each title
         //
         if (Get.find<TasksController>()
-                    .tasks[Get.find<TasksController>().tasksKeys[i].toString()]
-                ["Milestones"] !=
-            null) {
+            .tasks[Get.find<TasksController>().tasksKeys[i].toString()]
+                ["Milestones"]
+            .isNotEmpty) {
           for (int j = 0;
               j <
                   Get.find<TasksController>()
@@ -196,6 +197,8 @@ class TasksController extends GetxController {
             //
             double tempPercent = 0;
             int trueCount = 0;
+            log("progress ${Get.find<TasksController>().tasks[Get.find<TasksController>().stringTasksKeys[i]]["Tasks Titles"][k]}");
+
             for (int z = 0;
                 z <
                     Get.find<TasksController>()
@@ -215,6 +218,7 @@ class TasksController extends GetxController {
                 trueCount = trueCount + 1;
               }
             }
+
             tempPercent = trueCount /
                 Get.find<TasksController>()
                     .tasksProgress[Get.find<TasksController>()
@@ -292,6 +296,7 @@ class TasksController extends GetxController {
         ],
       ));
     }
+    log("tempCards ${tempCards}");
 
     return tempCards;
   }
@@ -372,129 +377,136 @@ class TasksController extends GetxController {
     int dayIndex = 0;
     dayIndex = Get.find<TasksController>().stringTasksKeys.indexOf(date);
     //
-    List<bool> checkDone = [];
-    for (int i = 0;
-        i < Get.find<TasksController>().tasksProgress[date][title].length;
-        i++) {
-      if (Get.find<TasksController>().tasksProgress[date][title][i]) {
-        checkDone.add(true);
-      }
-    }
+
     //
-    //if user has reached all the milestones then remove that task
+    index = Get.find<TasksController>().tasksTitle[dayIndex].indexOf(title);
     //
-    if (checkDone.length ==
-        Get.find<TasksController>().tasksProgress[date][title].length) {
-      Get.find<TasksController>().publishTaskToGsheets = true;
+    //remove task details at tasksTitle, tasksDesc, tasksTimeStart, tasksTimeEnd, milestoneMap,
+    //tasksProgress arrays
+    //
+    Get.find<TasksController>().tasksTitle[dayIndex].removeAt(index);
+    Get.find<TasksController>().tasksDesc[dayIndex].removeAt(index);
+    Get.find<TasksController>().tasksTimesStart[dayIndex].removeAt(index);
+    Get.find<TasksController>().tasksTimesEnd[dayIndex].removeAt(index);
+    //
+    Get.find<TasksController>().milestonesMap[date].remove(title);
+    Get.find<TasksController>().tasksProgress[date].remove(title);
+    //
+    // Get.find<TasksController>().tasks[date]['Tasks Titles'].removeAt(index);
+    // Get.find<TasksController>()
+    //     .tasks[date]['Tasks Description']
+    //     .removeAt(index);
+    // Get.find<TasksController>()
+    //     .tasks[date]['Tasks Start Times']
+    //     .removeAt(index);
+    // Get.find<TasksController>()
+    //     .tasks[date]['Tasks End Times']
+    //     .removeAt(index);
+    // Get.find<TasksController>().tasks[date]['Milestones'].remove(title);
+    // Get.find<TasksController>().tasks[date]['tasks progress'].remove(title);
+    //
+    //if after deleting task's details that day has no more tasks
+    //
+    if (Get.find<TasksController>().milestonesMap[date].isEmpty) {
       //
-      index = Get.find<TasksController>().tasksTitle[dayIndex].indexOf(title);
+      //remove that day data from all the arrays
+      //and delete that day from the tasks array because it has no more tasks
+      //as well as from the array containing all keys of the tasks
       //
-      //remove task details at tasksTitle, tasksDesc, tasksTimeStart, tasksTimeEnd, milestoneMap,
-      //tasksProgress arrays
+      Get.find<TasksController>().tasksTitle.removeAt(dayIndex);
+      Get.find<TasksController>().tasksDesc.removeAt(dayIndex);
+      Get.find<TasksController>().tasksTimesStart.removeAt(dayIndex);
+      Get.find<TasksController>().tasksTimesEnd.removeAt(dayIndex);
       //
-      Get.find<TasksController>().tasksTitle[dayIndex].removeAt(index);
-      Get.find<TasksController>().tasksDesc[dayIndex].removeAt(index);
-      Get.find<TasksController>().tasksTimesStart[dayIndex].removeAt(index);
-      Get.find<TasksController>().tasksTimesEnd[dayIndex].removeAt(index);
-      //
-      Get.find<TasksController>().milestonesMap[date].remove(title);
-      Get.find<TasksController>().tasksProgress[date].remove(title);
-      //
+      Get.find<TasksController>().milestonesMap.remove(date);
+      Get.find<TasksController>().tasksProgress.remove(date);
+      Get.find<TasksController>().tasks.remove(date);
 
+      Get.find<TasksController>().stringTasksKeys.removeAt(dayIndex);
       //
-      //if after deleting task's details that day has no more tasks
+      // Get.find<TasksController>().tasks.remove(date);
       //
-      if (Get.find<TasksController>().milestonesMap[date].isEmpty) {
-        //
-        //remove that day data from all the arrays
-        //and delete that day from the tasks array because it has no more tasks
-        //as well as from the array containing all keys of the tasks
-        //
-        Get.find<TasksController>().tasksTitle.removeAt(dayIndex);
-        Get.find<TasksController>().tasksDesc.removeAt(dayIndex);
-        Get.find<TasksController>().tasksTimesStart.removeAt(dayIndex);
-        Get.find<TasksController>().tasksTimesEnd.removeAt(dayIndex);
-        //
-        Get.find<TasksController>().milestonesMap.remove(date);
-        Get.find<TasksController>().tasksProgress.remove(date);
-        Get.find<TasksController>().tasks.remove(date);
+      //if after deleting that task the tasks array left empty then we input new empty
+      //data similar to a new signed up user to not miss with the database structure
+      //
+      if (Get.find<TasksController>().tasks.isEmpty) {
+        // Get.find<TasksController>().tasksTitle = [
+        //   [""]
+        // ];
+        // Get.find<TasksController>().tasksDesc = [
+        //   [""]
+        // ];
+        // Get.find<TasksController>().tasksTimesStart = [
+        //   [""]
+        // ];
+        // Get.find<TasksController>().tasksTimesEnd = [
+        //   [""]
+        // ];
 
-        Get.find<TasksController>().stringTasksKeys.removeAt(dayIndex);
-        //
-        //if after deleting that task the tasks array left empty then we input new empty
-        //data similar to a new signed up user to not miss with the database structure
-        //
-        if (Get.find<TasksController>().tasks.isEmpty) {
-          // Get.find<TasksController>().tasksTitle = [
-          //   [""]
-          // ];
-          // Get.find<TasksController>().tasksDesc = [
-          //   [""]
-          // ];
-          // Get.find<TasksController>().tasksTimesStart = [
-          //   [""]
-          // ];
-          // Get.find<TasksController>().tasksTimesEnd = [
-          //   [""]
-          // ];
-          Get.find<TasksController>().milestonesMap.clear();
-          Get.find<TasksController>().tasksProgress.clear();
-          Get.find<TasksController>().cardsRow.clear();
-          Get.find<TasksController>().cardsRow.value =
-              await Get.find<TasksController>().setCards();
+        Get.find<TasksController>().milestonesMap.clear();
+        Get.find<TasksController>().tasksProgress.clear();
+        Get.find<TasksController>().updateTasks();
 
-          // Get.find<SignInUp>().inputTasksWhenEmpty();
-          Get.find<TasksController>().updateTasks();
-          Get.find<TasksController>().tasksKeys =
-              Get.find<TasksController>().tasks.keys.toList();
-          Get.find<TasksController>().stringTasksKeys = [""];
-          log("STRIGN ${Get.find<TasksController>().stringTasksKeys}");
-          Get.back();
-        }
-        //
-        //if the tasks wasn't empty then update the tasks array with the left tasks
-        //
-        else {
-          Get.find<TasksController>().cardsRow.value =
-              await Get.find<TasksController>().setCards();
-          Get.find<TasksController>().tasksKeys =
-              Get.find<TasksController>().tasks.keys.toList();
-          Get.find<TasksController>().updateTasks();
-        }
-      }
-      //
-      //if after deleting the task that day still containing tasks, then update that day's tasks
-      //
-      else {
+        Get.find<TasksController>().cardsRow.clear();
         Get.find<TasksController>().cardsRow.value =
             await Get.find<TasksController>().setCards();
 
-        Get.find<TasksController>().createNewTask(date);
+        // Get.find<SignInUp>().inputTasksWhenEmpty();
+        Get.find<TasksController>().tasksKeys =
+            Get.find<TasksController>().tasks.keys.toList();
+        Get.find<TasksController>().stringTasksKeys = [""];
       }
-      Get.find<TasksController>().incToDo();
-      Get.find<TasksController>().incInProgress();
-      Get.find<TasksController>().incDone();
-      Get.back();
-
       //
-    } else {
-      Get.find<TasksController>().publishTaskToGsheets = false;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: mainTextColor,
-        content: Text(
-          "You haven't reached all the milestones for $title \n${checkDone.length} milestones was reached out of ${Get.find<TasksController>().tasksProgress[date][title].length}",
-          style:
-              TextStyle(color: Colors.white, fontSize: screenSize.width / 20),
-        ),
-      ));
+      //if the tasks wasn't empty then update the tasks array with the left tasks
+      //
+      else {
+        Get.find<TasksController>().tasksKeys =
+            Get.find<TasksController>().tasks.keys.toList();
+        await Get.find<TasksController>().updateTasks();
+        Get.find<TasksController>().cardsRow.value =
+            await Get.find<TasksController>().setCards();
+      }
     }
+    //
+    //if after deleting the task that day still containing tasks, then update that day's tasks
+    //
+    else {
+      await Get.find<TasksController>().createNewTask(date);
+      log("still tasks ${Get.find<TasksController>().tasks}");
+      Get.find<TasksController>().cardsRow.value =
+          await Get.find<TasksController>().setCards();
+    }
+    Get.find<TasksController>().incToDo();
+    Get.find<TasksController>().incInProgress();
+    Get.find<TasksController>().incDone();
+    Get.back();
+
+    //
   }
 
+  bool existInTitles = false.obs();
   List<dynamic> updateArray(List<dynamic> updatedList, String insert) {
     if (updatedList[0] == "" || updatedList.isEmpty) {
       updatedList[0] = insert;
     } else {
-      updatedList.add(insert);
+      ///
+      /// this checks if the task already exists so any updates happens in that existing task without creating a new one
+      /// if it doesn't exist then create a new task
+      ///
+      if (Get.find<AdminController>().adminTasks.isNotEmpty) {
+        if (Get.find<AdminController>()
+            .adminTasks[Get.find<NewTaskController>().implementInUser.value]
+                [Get.find<TasksController>().trackDate]['Tasks Titles']
+            .contains(Get.find<TasksController>().trackTitle)) {
+          int index = Get.find<AdminController>()
+              .adminTasks[Get.find<NewTaskController>().implementInUser.value]
+                  [Get.find<TasksController>().trackDate]['Tasks Titles']
+              .indexOf(Get.find<TasksController>().trackTitle);
+          updatedList[index] = insert;
+        } else {
+          updatedList.add(insert);
+        }
+      }
     }
     return updatedList;
   }
@@ -514,6 +526,7 @@ class TasksController extends GetxController {
     int totalMilestones = 0;
     //
     if (Get.find<TasksController>().tasks.isNotEmpty) {
+      log("tasks ${Get.find<TasksController>().tasks}");
       for (int i = 0;
           i < Get.find<TasksController>().stringTasksKeys.length;
           i++) {

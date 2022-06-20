@@ -16,25 +16,26 @@ class AdminTaskDetails extends StatelessWidget {
       required this.milestones,
       required this.date,
       required this.title,
-      required this.name});
+      required this.name,
+      this.fromDoneTasks = false});
 
   final String desc;
   final List<String> milestones;
   final String date;
   final String title;
   final String name;
+  final bool fromDoneTasks;
 
   AdminController adminController = Get.find<AdminController>();
 
   List<Widget> milestoneList = [];
   List<Widget> milestoneFunc(Size screenSize) {
-    log("aa $title");
     milestoneList = [];
     for (int i = 0; i < milestones.length; i++) {
       //
       milestoneList.add(
         SizedBox(
-          height: screenSize.height / 20,
+          height: screenSize.height / 15,
           width: screenSize.width / 1.3,
           child: Row(
             children: [
@@ -44,16 +45,27 @@ class AdminTaskDetails extends StatelessWidget {
               Checkbox(
                 fillColor: MaterialStateProperty.all<Color>(Colors.blue),
                 onChanged: (bool? value) {
-                  Get.find<AdminController>().adminTasks[name][date]
-                      ['tasks progress'][title][i] = value;
+                  fromDoneTasks
+                      ? log("from Done Tasks")
+                      : Get.find<AdminController>().adminTasks[name][date]
+                          ['tasks progress'][title][i] = value;
                 },
-                value: Get.find<AdminController>().adminTasks[name][date]
-                    ['tasks progress'][title][i],
+                value: fromDoneTasks
+                    ? true
+                    : Get.find<AdminController>().adminTasks[name][date]
+                        ['tasks progress'][title][i],
               ),
               SizedBox(
                 width: screenSize.width / 40,
               ),
-              CustText(text: milestones[i], fontSize: screenSize.width / 15)
+              SizedBox(
+                  width: screenSize.width / 1.5,
+                  child: CustText(
+                    text: milestones[i],
+                    fontSize: screenSize.width / 18,
+                    mileStone: true,
+                    bold: false,
+                  ))
             ],
           ),
         ),

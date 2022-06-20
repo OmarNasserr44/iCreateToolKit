@@ -30,7 +30,7 @@ class SignInUp extends GetxController {
   ];
   //
   String admin = 'not admin'.obs();
-  bool adminAcc = false.obs();
+  RxBool adminAcc = false.obs;
   //
   String name = ''.obs();
   String title = ''.obs();

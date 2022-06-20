@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icreate_attendence/GetX%20Controllers/DoneHistory.dart';
+import 'package:icreate_attendence/Requests/SignInUpFirebase.dart';
 import 'package:icreate_attendence/Widgets_/AdminRowCards.dart';
 import 'package:icreate_attendence/Widgets_/Card.dart';
 
@@ -14,6 +16,7 @@ import 'TasksController.dart';
 class AdminController extends GetxController {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   TasksController tasksController = Get.find<TasksController>();
+  SignInUp signInUp = Get.find<SignInUp>();
   Map<dynamic, dynamic> adminTasks = {}.obs;
   //
   RxList<Widget> adminCards = RxList();
@@ -56,6 +59,7 @@ class AdminController extends GetxController {
         if (value.exists) {
           Map<String, dynamic>? data = value.data();
           Get.find<AdminController>().adminTasks = data?['admin tasks'];
+          log("Admin Tasks Login ${Get.find<AdminController>().adminTasks}");
         }
       });
     } on Exception catch (e) {
@@ -129,11 +133,6 @@ class AdminController extends GetxController {
           [tasksController.trackDate]['tasks progress'] = {};
     }
 
-    tasksController.updateArray(
-        Get.find<AdminController>()
-                .adminTasks[Get.find<NewTaskController>().implementInUser.value]
-            [tasksController.trackDate]['Tasks Titles'],
-        tasksController.trackTitle);
     //
     tasksController.updateArray(
         Get.find<AdminController>()
@@ -153,6 +152,12 @@ class AdminController extends GetxController {
             [tasksController.trackDate]['Tasks End Times'],
         tasksController.trackEnd);
     //
+    tasksController.updateArray(
+        Get.find<AdminController>()
+                .adminTasks[Get.find<NewTaskController>().implementInUser.value]
+            [tasksController.trackDate]['Tasks Titles'],
+        tasksController.trackTitle);
+    //
     List<String> miles = [];
     for (int i = 0; i < tasksController.mileStonesString.length; i++) {
       miles.add(tasksController.mileStonesString[i]);
@@ -168,7 +173,6 @@ class AdminController extends GetxController {
               .implementInUser
               .value][tasksController.trackDate]['Milestones']
           [tasksController.trackTitle] = miles;
-      log("new mile ${Get.find<AdminController>().adminTasks[Get.find<NewTaskController>().implementInUser.value][tasksController.trackDate]['Milestones'][tasksController.trackTitle]}");
     } else {
       Get.find<AdminController>().adminTasks[Get.find<NewTaskController>()
               .implementInUser
@@ -314,5 +318,69 @@ class AdminController extends GetxController {
     }
     return rowCards;
   }
+
   //
+  ///
+  ///
+  ///
+  void doneAdminTask(String date, String title) {
+    if (Get.find<AdminController>().adminTasks.isNotEmpty) {
+      if (Get.find<AdminController>()
+          .adminTasks
+          .containsKey(Get.find<SignInUp>().name)) {
+        if (Get.find<AdminController>()
+            .adminTasks[Get.find<SignInUp>().name]
+            .containsKey(date)) {
+          if (Get.find<AdminController>()
+              .adminTasks[Get.find<SignInUp>().name][date]['tasks progress']
+              .containsKey(title)) {
+            ///
+            ///
+            int index = Get.find<AdminController>()
+                .adminTasks[Get.find<SignInUp>().name][date]['Tasks Titles']
+                .indexOf(title);
+            Get.find<AdminController>()
+                .adminTasks[Get.find<SignInUp>().name][date]['Milestones']
+                .remove(title);
+            Get.find<AdminController>()
+                .adminTasks[Get.find<SignInUp>().name][date]['tasks progress']
+                .remove(title);
+            Get.find<AdminController>()
+                .adminTasks[Get.find<SignInUp>().name][date]
+                    ['Tasks Description']
+                .removeAt(index);
+            Get.find<AdminController>()
+                .adminTasks[Get.find<SignInUp>().name][date]['Tasks Titles']
+                .remove(title);
+            Get.find<AdminController>()
+                .adminTasks[Get.find<SignInUp>().name][date]
+                    ['Tasks Start Times']
+                .removeAt(index);
+            Get.find<AdminController>()
+                .adminTasks[Get.find<SignInUp>().name][date]['Tasks End Times']
+                .removeAt(index);
+            log("lenn ${Get.find<AdminController>().adminTasks[Get.find<SignInUp>().name][date]['Milestones']}");
+            if (Get.find<AdminController>()
+                .adminTasks[Get.find<SignInUp>().name][date]['Milestones']
+                .isEmpty) {
+              log("IS EMPTY");
+              Get.find<AdminController>()
+                  .adminTasks[Get.find<SignInUp>().name]
+                  .remove(date);
+            }
+            if (Get.find<AdminController>()
+                .adminTasks[Get.find<SignInUp>().name]
+                .isEmpty) {
+              Get.find<AdminController>()
+                  .adminTasks
+                  .remove(Get.find<SignInUp>().name);
+            }
+            log("ADMIN TASKS ${Get.find<AdminController>().adminTasks}");
+            Get.find<AdminController>().updateAdminCards();
+            Get.find<AdminController>().updateAdminTasks();
+          }
+        }
+      }
+    }
+  }
 }

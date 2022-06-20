@@ -9,14 +9,15 @@ class CustText extends StatelessWidget {
       this.fontType = GoogleFonts.bebasNeue,
       required this.fontSize,
       this.bold = true,
-      this.color = mainTextColor});
+      this.color = mainTextColor,
+      this.mileStone = false});
 
   final fontType;
   final String text;
   final double fontSize;
   final bool bold;
   final Color color;
-
+  final bool mileStone;
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -26,7 +27,8 @@ class CustText extends StatelessWidget {
           textStyle: TextStyle(
               color: color,
               fontSize: fontSize,
-              overflow: TextOverflow.ellipsis,
+              overflow:
+                  mileStone ? TextOverflow.visible : TextOverflow.ellipsis,
               fontWeight: bold ? FontWeight.bold : FontWeight.normal)),
     );
   }

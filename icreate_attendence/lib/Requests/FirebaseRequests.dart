@@ -42,9 +42,11 @@ class FirebaseRequests extends GetxController {
           Get.find<SignInUp>().admin = data?['admin'];
 
           if (Get.find<SignInUp>().admin == "not admin") {
-            Get.find<SignInUp>().adminAcc = false;
+            Get.find<SignInUp>().adminAcc.value = false;
+            Get.find<SignInUp>().adminAcc.refresh();
           } else if (Get.find<SignInUp>().admin == "admin") {
-            Get.find<SignInUp>().adminAcc = true;
+            Get.find<SignInUp>().adminAcc.value = true;
+            Get.find<SignInUp>().adminAcc.refresh();
           }
         }
       });

@@ -1,7 +1,12 @@
 // ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors_in_immutables
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icreate_attendence/GetX%20Controllers/AdminsController.dart';
+import 'package:icreate_attendence/GetX%20Controllers/DoneHistory.dart';
+import 'package:icreate_attendence/Requests/SignInUpFirebase.dart';
+import 'package:icreate_attendence/Screens/DoneTasksScreen.dart';
 import '../Colors/Colors.dart';
 import '../GetX Controllers/TasksController.dart';
 import 'IconAndTasks.dart';
@@ -46,12 +51,22 @@ class TasksList extends StatelessWidget {
             height: screenSize.height / 50,
           ),
           Obx(
-            () => IconAndTasks(
-              tasksController: tasksController,
-              mainText: 'Done',
-              secText: '${tasksController.doneTasks} Tasks',
-              icons: Icons.done,
-              color: const Color(0xFF6e87dc),
+            () => GestureDetector(
+              onTap: () {
+                if (Get.find<SignInUp>().adminAcc.value) {
+                  Get.find<DoneTasksHistory>().updateDoneCards();
+                  // Get.find<AdminController>().updateAdminCards();
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => DoneTasks()));
+                }
+              },
+              child: IconAndTasks(
+                tasksController: tasksController,
+                mainText: 'Done',
+                secText: '${tasksController.doneTasks} Tasks',
+                icons: Icons.done,
+                color: const Color(0xFF6e87dc),
+              ),
             ),
           ),
         ],

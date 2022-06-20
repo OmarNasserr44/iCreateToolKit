@@ -11,6 +11,7 @@ import 'package:icreate_attendence/Widgets_/Button.dart';
 import 'package:icreate_attendence/Widgets_/CustText.dart';
 
 import '../Colors/Colors.dart';
+import '../GetX Controllers/DoneHistory.dart';
 import '../GetX Controllers/GoogleSheets.dart';
 import '../GetX Controllers/shared_preferences.dart';
 import '../GetX Controllers/updateCheck.dart';
@@ -27,6 +28,7 @@ class TaskCardDetails extends StatelessWidget {
   final String date;
   final String title;
   TasksController tasksController = Get.find<TasksController>();
+  DoneTasksHistory doneTasksHistory = Get.find<DoneTasksHistory>();
 
   List<Widget> milestoneList = [];
   List<List<bool>> milestoneCheck = [];
@@ -37,7 +39,7 @@ class TaskCardDetails extends StatelessWidget {
       //
       milestoneList.add(
         SizedBox(
-          height: screenSize.height / 20,
+          height: screenSize.height / 15,
           width: screenSize.width / 1.3,
           child: Row(
             children: [
@@ -78,7 +80,15 @@ class TaskCardDetails extends StatelessWidget {
               SizedBox(
                 width: screenSize.width / 40,
               ),
-              CustText(text: milestones[i], fontSize: screenSize.width / 15)
+              SizedBox(
+                width: screenSize.width / 1.5,
+                child: CustText(
+                  text: milestones[i],
+                  fontSize: screenSize.width / 18,
+                  mileStone: true,
+                  bold: false,
+                ),
+              )
             ],
           ),
         ),
@@ -182,93 +192,70 @@ class TaskCardDetails extends StatelessWidget {
               CustButton(
                   text: "Done",
                   onTap: () async {
-                    String tempMile = "";
-                    for (int i = 0; i < milestones.length; i++) {
-                      tempMile = "$tempMile ${milestones[i]}";
-                    }
-                    Get.find<TasksController>()
-                        .taskDone(date, title, context, screenSize);
-
-                    ///
-                    ///
-                    if (Get.find<AdminController>().adminTasks.isNotEmpty) {
-                      if (Get.find<AdminController>()
-                          .adminTasks
-                          .containsKey(Get.find<SignInUp>().name)) {
-                        if (Get.find<AdminController>()
-                            .adminTasks[Get.find<SignInUp>().name]
-                            .containsKey(date)) {
-                          if (Get.find<AdminController>()
-                              .adminTasks[Get.find<SignInUp>().name][date]
-                                  ['tasks progress']
-                              .containsKey(title)) {
-                            int index = Get.find<AdminController>()
-                                .adminTasks[Get.find<SignInUp>().name][date]
-                                    ['Tasks Titles']
-                                .indexOf(title);
-                            Get.find<AdminController>()
-                                .adminTasks[Get.find<SignInUp>().name][date]
-                                    ['Milestones']
-                                .remove(title);
-                            Get.find<AdminController>()
-                                .adminTasks[Get.find<SignInUp>().name][date]
-                                    ['tasks progress']
-                                .remove(title);
-                            Get.find<AdminController>()
-                                .adminTasks[Get.find<SignInUp>().name][date]
-                                    ['Tasks Description']
-                                .removeAt(index);
-                            Get.find<AdminController>()
-                                .adminTasks[Get.find<SignInUp>().name][date]
-                                    ['Tasks Titles']
-                                .remove(title);
-                            Get.find<AdminController>()
-                                .adminTasks[Get.find<SignInUp>().name][date]
-                                    ['Tasks Start Times']
-                                .removeAt(index);
-                            Get.find<AdminController>()
-                                .adminTasks[Get.find<SignInUp>().name][date]
-                                    ['Tasks End Times']
-                                .removeAt(index);
-                            log("lenn ${Get.find<AdminController>().adminTasks[Get.find<SignInUp>().name][date]['Milestones']}");
-                            if (Get.find<AdminController>()
-                                .adminTasks[Get.find<SignInUp>().name][date]
-                                    ['Milestones']
-                                .isEmpty) {
-                              log("IS EMPTY");
-                              Get.find<AdminController>()
-                                  .adminTasks[Get.find<SignInUp>().name]
-                                  .remove(date);
-                            }
-                            if (Get.find<AdminController>()
-                                .adminTasks[Get.find<SignInUp>().name]
-                                .isEmpty) {
-                              Get.find<AdminController>()
-                                  .adminTasks
-                                  .remove(Get.find<SignInUp>().name);
-                            }
-                            log("ADMIN TASKS ${Get.find<AdminController>().adminTasks}");
-                            Get.find<AdminController>().updateAdminCards();
-                            Get.find<AdminController>().updateAdminTasks();
-                          }
-                        }
+                    List<bool> checkDone = [];
+                    for (int i = 0;
+                        i <
+                            Get.find<TasksController>()
+                                .tasksProgress[date][title]
+                                .length;
+                        i++) {
+                      if (Get.find<TasksController>().tasksProgress[date][title]
+                          [i]) {
+                        checkDone.add(true);
                       }
                     }
+                    //
+                    //if user has reached all the milestones then remove that task
+                    //
+                    if (checkDone.length ==
+                        Get.find<TasksController>()
+                            .tasksProgress[date][title]
+                            .length) {
+                      Get.find<TasksController>().publishTaskToGsheets = true;
+                      String tempMile = "";
+                      for (int i = 0; i < milestones.length; i++) {
+                        tempMile = "$tempMile ${milestones[i]}";
+                      }
 
-                    ///
+                      ///
+                      Get.find<SignInUp>().showAlertDialog(context);
+                      await Get.find<DoneTasksHistory>()
+                          .updateDoneHistory(date, title, desc, milestones);
 
-                    ///
-                    if (Get.find<TasksController>().publishTaskToGsheets) {
-                      final user = {
-                        "task assigned date": date.toString(),
-                        "name": Get.find<SignInUp>().name.toString(),
-                        "task's title": title.toString(),
-                        "task's milestones": tempMile.toString(),
-                        "task's done time":
-                            Get.find<UpdateCheck>().currentTime.toString(),
-                      };
+                      ///
+                      Get.find<TasksController>()
+                          .taskDone(date, title, context, screenSize);
 
-                      await GoogleSheetsController.insertHistory([user]);
+                      ///
+                      Get.find<AdminController>().doneAdminTask(date, title);
+
+                      ///
+
+                      if (Get.find<TasksController>().publishTaskToGsheets) {
+                        final user = {
+                          "task assigned date": date.toString(),
+                          "name": Get.find<SignInUp>().name.toString(),
+                          "task's title": title.toString(),
+                          "task's milestones": tempMile.toString(),
+                          "task's done time":
+                              Get.find<UpdateCheck>().currentTime.toString(),
+                        };
+
+                        await GoogleSheetsController.insertHistory([user]);
+                      }
+                      Get.find<TasksController>().setPercent();
+                      Navigator.pop(context);
+                    } else {
+                      Get.find<TasksController>().publishTaskToGsheets = false;
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: mainTextColor,
+                        content: Text(
+                          "You haven't reached all the milestones for $title \n${checkDone.length} milestones was reached out of ${Get.find<TasksController>().tasksProgress[date][title].length}",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: screenSize.width / 20),
+                        ),
+                      ));
                     }
                   },
                   width: screenSize.width / 1.2)
