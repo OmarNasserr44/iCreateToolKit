@@ -18,7 +18,7 @@ Future<void> main() async {
   // PushNotification.notificationInitialize();
   await Firebase.initializeApp();
   await GoogleSheetsController.init();
-  await Get.find<SharedPreferencesController>().checkLogIn();
+  // await Get.find<SharedPreferencesController>().checkLogIn();
   // FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   // FirebaseMessaging.onMessage.listen((message) {
   //   // log(message.data.toString());
@@ -70,9 +70,10 @@ class _MyAppState extends State<MyApp> {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       initialBinding: AllControllerBindings(),
-      home: Get.find<SharedPreferencesController>().splashLogin.value
-          ? NavMainBottom()
-          : LogInScreen(),
+      home: SplashScreen(),
+      // home: Get.find<SharedPreferencesController>().splashLogin.value
+      //     ? NavMainBottom()
+      //     : LogInScreen(),
       // initialRoute: "SplashScreen",
       // routes: {
       //   "SplashScreen": (context) => SplashScreen(),
