@@ -79,6 +79,19 @@ class _LogInScreenState extends State<LogInScreen> {
     return valid;
   }
 
+  void snackBarr(Size screenSize) {
+    if (Get.find<SharedPreferencesController>().awaitedCheckLogin.value) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: mainTextColor,
+        content: Text(
+          "Couldn't load user data, please Log in",
+          style:
+              TextStyle(color: Colors.white, fontSize: screenSize.width / 20),
+        ),
+      ));
+    }
+  }
+
   @override
   void initState() {
     super.initState();

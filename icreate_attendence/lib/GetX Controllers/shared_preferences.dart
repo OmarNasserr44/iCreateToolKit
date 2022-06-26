@@ -43,6 +43,7 @@ class SharedPreferencesController extends GetxController {
 
   //
   RxBool splashLogin = false.obs;
+  RxBool awaitedCheckLogin = false.obs;
   Future<void> checkLogIn() async {
     await Get.find<SharedPreferencesController>().checkInternet();
     if (Get.find<SharedPreferencesController>().hasInternet) {

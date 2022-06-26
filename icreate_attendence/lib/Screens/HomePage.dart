@@ -86,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                     child: Row(
                       children: [
                         SizedBox(
-                          height: screenSize.height / 7,
+                          height: screenSize.height / 6,
                           width: screenSize.width / 3,
                           child: AvatarAndProgressPercent(
                             imgPath: "Assets/Images/avatarPNG.png",

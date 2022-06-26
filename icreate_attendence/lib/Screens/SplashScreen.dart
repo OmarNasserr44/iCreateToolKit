@@ -2,12 +2,10 @@ import 'dart:developer';
 import 'package:icreate_attendence/Colors/Colors.dart';
 import 'package:icreate_attendence/Widgets_/CustText.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icreate_attendence/GetX%20Controllers/shared_preferences.dart';
-
 import 'package:icreate_attendence/Screens/LogInScreen.dart';
 import 'package:icreate_attendence/Screens/NavMainBar.dart';
 
@@ -20,7 +18,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     () async {
+      Get.find<SharedPreferencesController>().awaitedCheckLogin.value = false;
       await Get.find<SharedPreferencesController>().checkLogIn();
+      Get.find<SharedPreferencesController>().awaitedCheckLogin.value = true;
     }();
     super.initState();
   }
@@ -59,11 +59,14 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
           backgroundColor: progressBackgroundColor,
           splashIconSize: screenSize.width / 1,
-          duration: 2500,
+          duration: 4000,
           // splashTransition: SplashTransition.rotationTransition,
-          nextScreen: Get.find<SharedPreferencesController>().splashLogin.value
-              ? NavMainBottom()
-              : LogInScreen()),
+          nextScreen:
+              Get.find<SharedPreferencesController>().awaitedCheckLogin.value
+                  ? LogInScreen()
+                  : Get.find<SharedPreferencesController>().splashLogin.value
+                      ? NavMainBottom()
+                      : LogInScreen()),
     );
   }
 }
