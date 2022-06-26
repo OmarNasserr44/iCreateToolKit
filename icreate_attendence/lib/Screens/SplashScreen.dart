@@ -38,6 +38,9 @@ class _SplashScreenState extends State<SplashScreen> {
               SizedBox(
                 height: screenSize.height / 10,
               ),
+
+              ///
+              /// ssh
               Center(
                 child: LoadingAnimationWidget.prograssiveDots(
                   color: Colors.white,
@@ -59,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
         backgroundColor: progressBackgroundColor,
         splashIconSize: screenSize.width / 1,
-        duration: 3000,
+        duration: 7000,
         // splashTransition: SplashTransition.rotationTransition,
         nextScreen: Temp());
   }

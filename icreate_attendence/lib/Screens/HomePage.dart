@@ -150,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                                       if (signInUp.adminAcc.value) {
                                         Get.find<NewTaskController>()
                                             .usersNames = [""];
-                                        Get.find<NewTaskController>()
+                                        await Get.find<NewTaskController>()
                                             .getFieldDataQuery(
                                                 "User Information",
                                                 "ID",

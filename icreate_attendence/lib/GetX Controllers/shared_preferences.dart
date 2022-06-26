@@ -80,14 +80,15 @@ class SharedPreferencesController extends GetxController {
           await Get.find<TasksController>().getUserTasks();
           await Get.find<AdminController>().getAdminTasks();
           await Get.find<DoneTasksHistory>().getDoneHistory();
+
+          if (Get.find<SignInUp>().adminAcc.value) {
+            Get.find<NewTaskController>().usersNames = [""];
+            await Get.find<NewTaskController>()
+                .getFieldDataQuery("User Information", "ID", "Name");
+          }
           Get.find<SharedPreferencesController>().splashLogin.value = true;
           Get.find<SharedPreferencesController>().splashLogin.refresh();
           log("BOOOL ${Get.find<SharedPreferencesController>().splashLogin}");
-          if (Get.find<SignInUp>().adminAcc.value) {
-            Get.find<NewTaskController>().usersNames = [""];
-            Get.find<NewTaskController>()
-                .getFieldDataQuery("User Information", "ID", "Name");
-          }
         }
       }
     }
